@@ -3,11 +3,15 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/motion";
+import { setLenis } from "@/lib/lenisRef";
 
 /**
  * Drives the page with Lenis and hands every frame to GSAP's ticker, so
  * smoothing and ScrollTrigger read from the same clock. Without this the
- * scrubbed timelines lag a frame behind the scroll position and judder.
+ * scrubbed timelines sit a frame behind the scroll position and judder.
+ *
+ * The smoothing is deliberately light. A long duration here reads as the page
+ * refusing to move, which is the opposite of what smoothing is for.
  *
  * Disabled entirely under `prefers-reduced-motion`.
  */
@@ -16,12 +20,12 @@ export default function SmoothScroll() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     const lenis = new Lenis({
-      duration: 1.15,
-      // Long, flat curve: the page keeps moving after the wheel stops.
-      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.14,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.8,
       smoothWheel: true,
-      touchMultiplier: 1.6,
     });
+    setLenis(lenis);
 
     const onScroll = () => ScrollTrigger.update();
     lenis.on("scroll", onScroll);
@@ -41,7 +45,7 @@ export default function SmoothScroll() {
       const target = document.querySelector(id);
       if (!target) return;
       e.preventDefault();
-      lenis.scrollTo(target as HTMLElement, { offset: 0, duration: 1.6 });
+      lenis.scrollTo(target as HTMLElement, { duration: 1.1 });
     };
     document.addEventListener("click", onClick);
 
@@ -50,6 +54,7 @@ export default function SmoothScroll() {
       lenis.off("scroll", onScroll);
       gsap.ticker.remove(raf);
       lenis.destroy();
+      setLenis(null);
     };
   }, []);
 

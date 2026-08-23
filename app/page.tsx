@@ -2,6 +2,7 @@ import GlobalNav from "@/components/GlobalNav";
 import VisualStage from "@/components/VisualStage";
 import SmoothScroll from "@/components/SmoothScroll";
 import PointerField from "@/components/PointerField";
+import ScrollProgress from "@/components/ScrollProgress";
 import HeroScene from "@/components/scenes/HeroScene";
 import ProjectScene from "@/components/scenes/ProjectScene";
 import AboutScene from "@/components/scenes/AboutScene";
@@ -15,6 +16,7 @@ export default function Page() {
       <SmoothScroll />
       <PointerField />
       <GlobalNav />
+      <ScrollProgress />
 
       {/* Fixed imagery for the whole hero → work sequence. */}
       <VisualStage />

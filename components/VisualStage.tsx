@@ -15,14 +15,15 @@ import CapabilitiesVisual from "./stage/CapabilitiesVisual";
  *
  * It is a single fixed, viewport-sized surface holding every project visual.
  * The document scrolls underneath it; the imagery never scrolls, it is
- * transformed. Each handoff overlaps the one before it — the outgoing visual
- * is still on screen, blurring and scaling past the camera, while the next
- * one is already resolving out of it — so the visuals read as one object
- * being reshaped rather than five pictures being swapped.
+ * transformed.
  *
- * All scroll work lives in one `gsap.matchMedia()` so desktop, mobile and
- * reduced-motion each get a timeline built for them, and one `revert()`
- * tears every ScrollTrigger down.
+ * Handoffs are cut from one set of ranges shared by every scene, so the
+ * overlap between an outgoing and an incoming visual is the same length
+ * everywhere: the outgoing one is still on screen, scaling and defocusing
+ * past the camera, while the next resolves out of it. Adjacent sections share
+ * an edge, so `OUT` on one scene and `IN` on the next are measured against the
+ * same line — which is what keeps the overlap window fixed at roughly a third
+ * of a viewport rather than drifting with scene length.
  */
 export default function VisualStage() {
   const root = useRef<HTMLDivElement>(null);
@@ -52,13 +53,14 @@ export default function VisualStage() {
           layer.map((n) => n.querySelector(".layer-motion") as Element);
 
         /* ── Reduced motion ───────────────────────────────────────────
-           No scrubbing, no travel. Each visual simply belongs to its
-           scene and crossfades when that scene owns the viewport, which
-           leaves a finished, static composition at every scroll stop. */
+           No scrubbing, no travel. Each visual belongs to its scene and
+           crossfades when that scene owns the viewport, leaving a finished
+           static composition at every scroll stop. */
         if (reduced) {
-          gsap.set([hero, caroot, protein, commerce, workflow, caps], {
-            autoAlpha: 0,
-          });
+          gsap.set(
+            [hero, caroot, protein, commerce, workflow, caps],
+            { autoAlpha: 0 },
+          );
           gsap.set(hero, { autoAlpha: 1 });
 
           const pairs: [Element[], string][] = [
@@ -89,29 +91,40 @@ export default function VisualStage() {
         /* Amplitude scale — mobile keeps the art direction but travels less. */
         const k = desktop ? 1 : 0.5;
 
+        /* One vocabulary of ranges for every handoff. */
+        const IN = { start: "top 74%", end: "top 22%" };
+        const TRAVEL = { start: "top 22%", end: "bottom 78%" };
+        const OUT = { start: "bottom 78%", end: "bottom 38%" };
+        const at = (scene: string, r: { start: string; end: string }) => ({
+          trigger: scene,
+          start: r.start,
+          end: r.end,
+          scrub: 0.7,
+          invalidateOnRefresh: true,
+        });
+
         gsap.set([caroot, protein, commerce, workflow, caps], { autoAlpha: 0 });
         gsap.set(hero, { autoAlpha: 1 });
         gsap.set(motionOf(hero), { scale: 0.88, rotate: -0.6 });
 
         /* ── HERO ───────────────────────────────────────────────────
-           The camera pushes into the object until it passes the lens. */
+           The camera pushes into the object until it passes the lens.
+           No blur: this is the largest layer on the page and animating
+           `filter` on it forces a full repaint every frame (~17ms measured).
+           Scale and opacity alone stay on the compositor. */
         gsap
           .timeline({
             scrollTrigger: {
               trigger: "#hero",
               start: "top top",
               end: "bottom top",
-              scrub: 1,
+              scrub: 0.7,
               invalidateOnRefresh: true,
             },
           })
           .to(
             motionOf(hero),
             {
-              // No blur here on purpose: this layer is the largest thing on
-              // the page and animating `filter` on it forces a full repaint
-              // every frame (measured at ~17ms). Scale and opacity alone
-              // carry the push past the lens, and they stay on the compositor.
               scale: 1 + 0.62 * k,
               y: vh(-0.06 * k),
               rotate: 2.6 * k,
@@ -120,25 +133,16 @@ export default function VisualStage() {
             },
             0,
           )
-          .to(hero, { autoAlpha: 0, ease: "none", duration: 0.34 }, 0.64);
+          .to(hero, { autoAlpha: 0, ease: "none", duration: 0.32 }, 0.66);
 
-        /* ── HERO → CAROOT ──────────────────────────────────────────
+        /* ── CAROOT ─────────────────────────────────────────────────
            The flow graphic resolves out of the still-visible hero object:
            same origin, same blur budget, opposite direction. The clip-path
            wipe makes the routing lines look drawn rather than faded in. */
         gsap.fromTo(
           caroot,
           { autoAlpha: 0 },
-          {
-            autoAlpha: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "#p-caroot",
-              start: "top 92%",
-              end: "top 30%",
-              scrub: 1,
-            },
-          },
+          { autoAlpha: 1, ease: "none", scrollTrigger: at("#p-caroot", IN) },
         );
         gsap.fromTo(
           motionOf(caroot),
@@ -154,16 +158,9 @@ export default function VisualStage() {
             filter: "blur(0px)",
             clipPath: "inset(0% 0% 0% 0%)",
             ease: "none",
-            scrollTrigger: {
-              trigger: "#p-caroot",
-              start: "top 92%",
-              end: "top 18%",
-              scrub: 1,
-            },
+            scrollTrigger: at("#p-caroot", IN),
           },
         );
-
-        /* CaRoot travel — the flow drifts across the frame, left to right. */
         gsap.fromTo(
           motionOf(caroot),
           { x: vw(0.05 * k) },
@@ -171,39 +168,20 @@ export default function VisualStage() {
             x: vw(-0.05 * k),
             scale: 1 + 0.06 * k,
             ease: "none",
-            scrollTrigger: {
-              trigger: "#p-caroot",
-              start: "top 18%",
-              end: "bottom 62%",
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
+            scrollTrigger: at("#p-caroot", TRAVEL),
           },
         );
 
         /* CaRoot → Protein: the flow breaks apart. Two dim copies diverge
-           and blur out while the cloud converges over the same centre. */
-        const dissolve = gsap.timeline({
-          scrollTrigger: {
-            trigger: "#p-caroot",
-            start: "bottom 62%",
-            end: "bottom 6%",
-            scrub: 1,
-            invalidateOnRefresh: true,
-          },
-        });
-        dissolve
+           while the cloud converges over the same centre. */
+        gsap
+          .timeline({ scrollTrigger: at("#p-caroot", OUT) })
           .to(
             motionOf(caroot),
-            {
-              scale: 1 + 0.18 * k,
-              filter: "blur(12px)",
-              ease: "none",
-              duration: 1,
-            },
+            { scale: 1 + 0.18 * k, filter: "blur(12px)", ease: "none", duration: 1 },
             0,
           )
-          .to(caroot, { autoAlpha: 0, ease: "none", duration: 0.75 }, 0.25)
+          .to(caroot, { autoAlpha: 0, ease: "none", duration: 0.7 }, 0.3)
           .fromTo(
             q(".caroot-shard-a"),
             { opacity: 0, x: 0, y: 0, scale: 1 },
@@ -236,16 +214,7 @@ export default function VisualStage() {
         gsap.fromTo(
           protein,
           { autoAlpha: 0 },
-          {
-            autoAlpha: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "#p-protein",
-              start: "top 95%",
-              end: "top 40%",
-              scrub: 1,
-            },
-          },
+          { autoAlpha: 1, ease: "none", scrollTrigger: at("#p-protein", IN) },
         );
         gsap.fromTo(
           motionOf(protein),
@@ -256,13 +225,7 @@ export default function VisualStage() {
             x: vw(0.1 * k),
             rotate: -3 * k,
             ease: "none",
-            scrollTrigger: {
-              trigger: "#p-protein",
-              start: "top 95%",
-              end: "top 22%",
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
+            scrollTrigger: at("#p-protein", IN),
           },
         );
         gsap.fromTo(
@@ -273,74 +236,38 @@ export default function VisualStage() {
             rotate: 3 * k,
             x: vw(-0.04 * k),
             ease: "none",
-            scrollTrigger: {
-              trigger: "#p-protein",
-              start: "top 22%",
-              end: "bottom 55%",
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
+            scrollTrigger: at("#p-protein", TRAVEL),
           },
         );
-        gsap.to(motionOf(protein), {
-          scale: 0.92,
-          filter: "blur(9px)",
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#p-protein",
-            start: "bottom 55%",
-            end: "bottom 4%",
-            scrub: 1,
-          },
-        });
-        gsap.to(protein, {
-          autoAlpha: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#p-protein",
-            start: "bottom 42%",
-            end: "bottom 4%",
-            scrub: 1,
-          },
-        });
+        gsap
+          .timeline({ scrollTrigger: at("#p-protein", OUT) })
+          .to(
+            motionOf(protein),
+            { scale: 0.92, filter: "blur(9px)", ease: "none", duration: 1 },
+            0,
+          )
+          .to(protein, { autoAlpha: 0, ease: "none", duration: 0.7 }, 0.3);
 
         /* ── COMMERCE ───────────────────────────────────────────────
-           Three copies of the hero object assemble, breathe apart under
-           scroll, then separate for good on the way out. */
+           Two clip-path halves of one structure: they arrive from opposite
+           sides, lock together, breathe apart under scroll, then separate
+           for good on the way out. */
         const modA = q(".module-a");
         const modB = q(".module-b");
 
         gsap.fromTo(
           commerce,
           { autoAlpha: 0 },
-          {
-            autoAlpha: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "#p-commerce",
-              start: "top 95%",
-              end: "top 45%",
-              scrub: 1,
-            },
-          },
+          { autoAlpha: 1, ease: "none", scrollTrigger: at("#p-commerce", IN) },
         );
         gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: "#p-commerce",
-              start: "top 95%",
-              end: "top 20%",
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
-          })
+          .timeline({ scrollTrigger: at("#p-commerce", IN) })
           .fromTo(
             motionOf(commerce),
-            { scale: 1.25, filter: "blur(8px)" },
+            { scale: 1.25, filter: "blur(9px)" },
             { scale: 1, filter: "blur(0px)", ease: "none", duration: 1 },
             0,
           )
-          // The halves arrive from opposite sides and lock together.
           .fromTo(
             modA,
             { x: vw(-0.14 * k), y: vh(0.07 * k) },
@@ -355,15 +282,7 @@ export default function VisualStage() {
           );
 
         gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: "#p-commerce",
-              start: "top 20%",
-              end: "bottom 58%",
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
-          })
+          .timeline({ scrollTrigger: at("#p-commerce", TRAVEL) })
           .to(modA, { x: -18 * k, y: 6 * k, ease: "none", duration: 1 }, 0)
           .to(modB, { x: 16 * k, y: -8 * k, ease: "none", duration: 1 }, 0)
           .to(
@@ -373,22 +292,10 @@ export default function VisualStage() {
           );
 
         gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: "#p-commerce",
-              start: "bottom 58%",
-              end: "bottom 6%",
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
-          })
+          .timeline({ scrollTrigger: at("#p-commerce", OUT) })
           .to(modA, { x: vw(-0.1 * k), y: vh(0.04 * k), ease: "none", duration: 1 }, 0)
           .to(modB, { x: vw(0.1 * k), y: vh(-0.05 * k), ease: "none", duration: 1 }, 0)
-          .to(
-            motionOf(commerce),
-            { filter: "blur(9px)", ease: "none", duration: 1 },
-            0,
-          )
+          .to(motionOf(commerce), { filter: "blur(9px)", ease: "none", duration: 1 }, 0)
           .to(commerce, { autoAlpha: 0, ease: "none", duration: 0.7 }, 0.3);
 
         /* ── WORKFLOW ───────────────────────────────────────────────
@@ -398,36 +305,17 @@ export default function VisualStage() {
         gsap.fromTo(
           workflow,
           { autoAlpha: 0 },
-          {
-            autoAlpha: 1,
-            ease: "none",
-            scrollTrigger: {
-              trigger: "#p-workflow",
-              start: "top 76%",
-              end: "top 40%",
-              scrub: 1,
-            },
-          },
+          { autoAlpha: 1, ease: "none", scrollTrigger: at("#p-workflow", IN) },
         );
         gsap.fromTo(
           motionOf(workflow),
-          {
-            clipPath: "inset(0% 100% 0% 0%)",
-            x: vw(0.06 * k),
-            scale: 0.96,
-          },
+          { clipPath: "inset(0% 100% 0% 0%)", x: vw(0.06 * k), scale: 0.96 },
           {
             clipPath: "inset(0% 0% 0% 0%)",
             x: 0,
             scale: 1,
             ease: "none",
-            scrollTrigger: {
-              trigger: "#p-workflow",
-              start: "top 76%",
-              end: "top 18%",
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
+            scrollTrigger: at("#p-workflow", IN),
           },
         );
         gsap.to(motionOf(workflow), {
@@ -435,29 +323,17 @@ export default function VisualStage() {
           x: vw(-0.04 * k),
           y: vh(-0.03 * k),
           ease: "none",
-          scrollTrigger: {
-            trigger: "#p-workflow",
-            start: "top 20%",
-            end: "bottom 52%",
-            scrub: 1,
-            invalidateOnRefresh: true,
-          },
+          scrollTrigger: at("#p-workflow", TRAVEL),
         });
         gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: "#p-workflow",
-              start: "bottom 52%",
-              end: "bottom top",
-              scrub: 1,
-            },
-          })
+          .timeline({ scrollTrigger: at("#p-workflow", OUT) })
           .to(
             motionOf(workflow),
             { filter: "blur(8px)", scale: 1.16, ease: "none", duration: 1 },
             0,
           )
           .to(workflow, { autoAlpha: 0, ease: "none", duration: 0.8 }, 0.2);
+
         /* ── CAPABILITIES ───────────────────────────────────────────
            Not a project visual: a background the term field is set over,
            kept dim and slow so it never competes with the type. */
@@ -467,12 +343,7 @@ export default function VisualStage() {
           {
             autoAlpha: 0.32,
             ease: "none",
-            scrollTrigger: {
-              trigger: "#capabilities",
-              start: "top 85%",
-              end: "top 35%",
-              scrub: 1,
-            },
+            scrollTrigger: at("#capabilities", { start: "top 85%", end: "top 35%" }),
           },
         );
         gsap.fromTo(
@@ -482,24 +353,19 @@ export default function VisualStage() {
             scale: 1,
             y: vh(-0.05 * k),
             ease: "none",
-            scrollTrigger: {
-              trigger: "#capabilities",
+            scrollTrigger: at("#capabilities", {
               start: "top bottom",
               end: "bottom top",
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
+            }),
           },
         );
         gsap.to(caps, {
           autoAlpha: 0,
           ease: "none",
-          scrollTrigger: {
-            trigger: "#capabilities",
+          scrollTrigger: at("#capabilities", {
             start: "bottom 60%",
             end: "bottom 15%",
-            scrub: 1,
-          },
+          }),
         });
       },
     );

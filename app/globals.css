@@ -239,8 +239,10 @@ img {
 }
 
 /* Long scenes give the scrubbed timelines room to breathe. */
+/* Long enough for a scrubbed timeline to breathe, short enough that the type
+   is never pinned for more than about half a viewport of scrolling. */
 .scene--tall {
-  min-height: 210vh;
+  min-height: 145vh;
 }
 
 .scene-sticky {
@@ -316,7 +318,7 @@ img {
    HERO
    ─────────────────────────────────────────────────────────────── */
 .hero {
-  min-height: 260vh;
+  min-height: 170vh;
 }
 
 .hero-type {
@@ -611,21 +613,21 @@ img {
 }
 
 .project--caroot .scene-sticky {
-  justify-content: flex-end;
+  justify-content: center;
   align-items: flex-start;
-  padding-bottom: clamp(3rem, 14vh, 10rem);
+  padding-top: clamp(2rem, 10vh, 7rem);
 }
 .project--protein .scene-sticky {
-  justify-content: flex-end;
+  justify-content: center;
   align-items: flex-start;
-  padding-bottom: clamp(3rem, 12vh, 9rem);
+  padding-top: clamp(3rem, 12vh, 8rem);
 }
 .project--commerce .scene-sticky {
   justify-content: center;
   align-items: flex-start;
-  /* Held above centre with padding rather than a transform — GSAP owns the
-     block's transform for the midground drift. */
-  padding-bottom: clamp(4rem, 16vh, 11rem);
+  /* Held just above centre with padding rather than a transform — GSAP owns
+     the block's transform. */
+  padding-bottom: clamp(2rem, 8vh, 5rem);
 }
 .project--workflow .scene-sticky {
   justify-content: center;
@@ -704,4 +706,231 @@ img {
 /* Containing block for the hero planes once they drop out of `fixed`. */
 .hero-root {
   position: relative;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   SCHEMATIC
+   The diagram that says what each project is. Drawn by scroll, so the
+   page visibly advances instead of only drifting.
+   ─────────────────────────────────────────────────────────────── */
+.schematic {
+  margin: clamp(1.4rem, 3vh, 2.4rem) 0 0;
+  width: min(30rem, 100%);
+}
+
+.schematic svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.sch-line {
+  fill: none;
+  stroke: var(--dim);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+/* The exception path. Its dash pattern is the meaning, so it cannot also
+   carry the draw-on animation — it fades in instead. */
+.sch-dash {
+  stroke: var(--dimmer);
+  stroke-dasharray: 3 4;
+  opacity: 0;
+}
+.sch-dot {
+  fill: var(--dim);
+  stroke: none;
+}
+/* pathLength is 1, so a dasharray of 1 is exactly one full stroke */
+.sch-draw {
+  stroke-dasharray: 1;
+}
+
+.sch-node rect,
+.sch-node circle,
+.sch-node line {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.sch-node .sch-fill {
+  fill: var(--white);
+  stroke: none;
+}
+.sch-accent rect,
+.sch-accent circle,
+.sch-accent line {
+  stroke: var(--blue-lift);
+}
+.sch-accent .sch-fill {
+  fill: var(--blue-lift);
+}
+
+.sch-marker {
+  fill: var(--blue-lift);
+  stroke: none;
+}
+
+.sch-label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 7.5px;
+  letter-spacing: 0.14em;
+  fill: var(--dim);
+}
+
+.schematic-caption {
+  margin: 0.9rem 0 0;
+  color: var(--dimmer);
+  text-transform: none;
+  letter-spacing: 0.04em;
+  max-width: 42ch;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   SCROLL PROGRESS
+   ─────────────────────────────────────────────────────────────── */
+.progress {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0 var(--gutter) 0.55rem;
+}
+
+.progress-label {
+  color: var(--dimmer);
+  align-self: flex-end;
+}
+
+.progress-track {
+  display: block;
+  height: 1px;
+  background: var(--line-soft);
+}
+
+.progress-bar {
+  display: block;
+  height: 100%;
+  background: var(--white);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   MENU
+   ─────────────────────────────────────────────────────────────── */
+.burger {
+  display: none;
+  position: relative;
+  width: 30px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.burger span {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--white);
+}
+.burger-top {
+  top: 4px;
+}
+.burger-bottom {
+  top: 12px;
+}
+.burger:focus-visible {
+  outline: 1px solid var(--white);
+  outline-offset: 6px;
+}
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  background: var(--black);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: clamp(2rem, 8vh, 5rem);
+  padding: clamp(5rem, 14vh, 8rem) var(--gutter) clamp(2rem, 6vh, 3rem);
+  clip-path: inset(0% 0% 100% 0%);
+  pointer-events: none;
+}
+
+/* The auto block margins take all the free space, which centres the links
+   and leaves the footer sitting on the bottom edge. */
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  margin-block: auto;
+}
+
+.menu-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.menu-item {
+  display: block;
+  font-size: clamp(2.6rem, 15vw, 5.5rem);
+}
+
+.menu-line:focus-visible {
+  outline: 1px solid var(--white);
+  outline-offset: 4px;
+}
+
+.menu-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--dim);
+  border-top: 1px solid var(--line-soft);
+  padding-top: 1rem;
+}
+
+/* Freeze the document while the menu owns the viewport. */
+.menu-open,
+.menu-open body {
+  overflow: hidden;
+}
+
+@media (max-width: 899px) {
+  .nav-links {
+    display: none;
+  }
+  .burger {
+    display: block;
+  }
+  /* The panel is opaque black; difference blending would invert it. */
+  .nav {
+    mix-blend-mode: normal;
+  }
+  .progress {
+    padding-bottom: 0.45rem;
+  }
+  .schematic {
+    width: 100%;
+  }
+  .sch-label {
+    font-size: 9px;
+  }
+}
+
+@media (min-width: 900px) {
+  .menu {
+    display: none;
+  }
 }
