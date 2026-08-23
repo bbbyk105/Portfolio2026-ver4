@@ -35,10 +35,10 @@ export default function AboutScene() {
         stagger: 0.08,
         scrollTrigger: { trigger: el, start: "top 62%" },
       });
-      // The portrait is uncovered rather than faded — it is the one
-      // photograph on the page and it should arrive with some weight.
+      // Wiped in from the side like a plate being placed, not raised up
+      // from below like a portrait being unveiled.
       gsap.from(q(".portrait"), {
-        clipPath: "inset(100% 0% 0% 0%)",
+        clipPath: "inset(0% 100% 0% 0%)",
         duration: DUR.reveal,
         ease: EASE.enter,
         scrollTrigger: { trigger: el, start: "top 66%" },
@@ -53,7 +53,12 @@ export default function AboutScene() {
       <div className="about-grid">
         <div className="about-id stack-tight">
           <div className="portrait">
-            <Visual name="portrait" width={760} height={711} />
+            <Visual
+              name="portrait"
+              width={760}
+              height={760}
+              alt="Byakko Kondo"
+            />
           </div>
           <span className="tick soft-in" />
           {about.identity.map((line, i) => (

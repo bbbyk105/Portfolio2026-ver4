@@ -12,6 +12,8 @@ type Props = {
   className?: string;
   style?: React.CSSProperties;
   priority?: boolean;
+  /** Stage renders are decoration; the portrait is content and needs a name. */
+  alt?: string;
 };
 
 /**
@@ -28,6 +30,7 @@ export default function Visual({
   className,
   style,
   priority = false,
+  alt = "",
 }: Props) {
   return (
     // next/image's wrapper element breaks the stage's transform chain, so the
@@ -39,8 +42,8 @@ export default function Visual({
       sizes="(max-width: 899px) 80vw, 55vw"
       width={width}
       height={height}
-      alt=""
-      aria-hidden="true"
+      alt={alt}
+      aria-hidden={alt ? undefined : "true"}
       draggable={false}
       className={className}
       style={style}

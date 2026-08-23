@@ -1046,20 +1046,25 @@ img {
 
 /* ───────────────────────────────────────────────────────────────
    PORTRAIT
-   The only photograph on the page. Monochrome, cut out, and kept small
-   so it reads as a stamp beside the statement rather than a hero image.
+   A small square photographic plate — a tight crop on the face inside a
+   hard rectangle. Explicitly NOT a cut-out bust floating on black: a
+   monochrome suit-and-tie silhouette framed that way reads as a memorial
+   portrait, which is not what this page is.
    ─────────────────────────────────────────────────────────────── */
 .portrait {
-  width: clamp(120px, 13vw, 190px);
+  width: clamp(104px, 11vw, 156px);
+  aspect-ratio: 1;
   margin-bottom: clamp(1.2rem, 3vh, 2rem);
+  overflow: hidden;
 }
 .portrait img {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
 }
 
 @media (max-width: 899px) {
   .portrait {
-    width: clamp(110px, 34vw, 160px);
+    width: clamp(96px, 28vw, 132px);
   }
 }
