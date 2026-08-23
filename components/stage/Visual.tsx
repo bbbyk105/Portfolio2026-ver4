@@ -5,7 +5,8 @@ type Props = {
     | "protein-cloud"
     | "commerce-modules"
     | "workflow-diagram"
-    | "workflow-routing";
+    | "workflow-routing"
+    | "portrait";
   width: number;
   height: number;
   className?: string;

@@ -10,12 +10,6 @@ export default function CaRootVisual() {
   return (
     <Layer
       id="caroot"
-      place={{
-        justifyItems: "end",
-        alignItems: "start",
-        paddingRight: "clamp(2rem, 8vw, 9rem)",
-        paddingTop: "clamp(3rem, 12vh, 8rem)",
-      }}
       pointer={{ "--px": "8px", "--py": "6px" } as React.CSSProperties}
     >
       <div style={{ position: "relative" }}>

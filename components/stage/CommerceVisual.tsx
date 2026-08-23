@@ -12,12 +12,6 @@ export default function CommerceVisual() {
   return (
     <Layer
       id="commerce"
-      place={{
-        justifyItems: "end",
-        alignItems: "end",
-        paddingRight: "clamp(1rem, 5vw, 6rem)",
-        paddingBottom: "clamp(2rem, 10vh, 8rem)",
-      }}
       pointer={{ "--px": "6px", "--py": "6px" } as React.CSSProperties}
     >
       <div className="module-stack">

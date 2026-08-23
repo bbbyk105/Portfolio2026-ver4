@@ -27,7 +27,9 @@ export default function Schematic({ id }: { id: string }) {
 
     mm.add(MQ.reduced, () => {
       gsap.set(q(".sch-draw"), { strokeDashoffset: 0 });
-      gsap.set([q(".sch-node"), q(".sch-dot"), q(".sch-dash")], {
+      // Spread, not nest: a nested array reaches CSSPlugin as a target with
+      // no `.style`, which throws and takes the whole tree down with it.
+      gsap.set([...q(".sch-node"), ...q(".sch-dot"), ...q(".sch-dash")], {
         opacity: 1,
         scale: 1,
       });
@@ -57,7 +59,7 @@ export default function Schematic({ id }: { id: string }) {
           0,
         )
         .fromTo(
-          [q(".sch-node"), q(".sch-dot")],
+          [...q(".sch-node"), ...q(".sch-dot")],
           { opacity: 0, scale: 0.4 },
           {
             opacity: 1,

@@ -58,7 +58,7 @@ export default function VisualStage() {
            static composition at every scroll stop. */
         if (reduced) {
           gsap.set(
-            [hero, caroot, protein, commerce, workflow, caps],
+            [...hero, ...caroot, ...protein, ...commerce, ...workflow, ...caps],
             { autoAlpha: 0 },
           );
           gsap.set(hero, { autoAlpha: 1 });
@@ -103,7 +103,9 @@ export default function VisualStage() {
           invalidateOnRefresh: true,
         });
 
-        gsap.set([caroot, protein, commerce, workflow, caps], { autoAlpha: 0 });
+        gsap.set([...caroot, ...protein, ...commerce, ...workflow, ...caps], {
+          autoAlpha: 0,
+        });
         gsap.set(hero, { autoAlpha: 1 });
         gsap.set(motionOf(hero), { scale: 0.88, rotate: -0.6 });
 
@@ -389,6 +391,8 @@ export default function VisualStage() {
       <CommerceVisual />
       <WorkflowVisual />
       <CapabilitiesVisual />
+      {/* Painted last so it sits over every layer, still behind the type. */}
+      <div className="scrim" />
     </div>
   );
 }

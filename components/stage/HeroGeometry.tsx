@@ -5,7 +5,6 @@ export default function HeroGeometry() {
   return (
     <Layer
       id="hero"
-      place={{ alignItems: "center", justifyItems: "center" }}
       pointer={
         {
           "--px": "10px",

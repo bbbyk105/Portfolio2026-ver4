@@ -5,12 +5,6 @@ export default function ProteinVisual() {
   return (
     <Layer
       id="protein"
-      place={{
-        justifyItems: "end",
-        alignItems: "start",
-        paddingRight: "clamp(1rem, 4vw, 4rem)",
-        paddingTop: "clamp(2rem, 8vh, 6rem)",
-      }}
       pointer={
         { "--px": "7px", "--py": "7px", "--ry": "1.6deg" } as React.CSSProperties
       }

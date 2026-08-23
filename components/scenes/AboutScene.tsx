@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { about } from "@/lib/content";
 import { gsap, MQ, EASE, DUR } from "@/lib/motion";
 import { useIsoLayoutEffect } from "@/lib/useIsoLayoutEffect";
+import Visual from "@/components/stage/Visual";
 
 /**
  * Not a profile block: a small identity stamp on the left and a statement
@@ -34,6 +35,14 @@ export default function AboutScene() {
         stagger: 0.08,
         scrollTrigger: { trigger: el, start: "top 62%" },
       });
+      // The portrait is uncovered rather than faded — it is the one
+      // photograph on the page and it should arrive with some weight.
+      gsap.from(q(".portrait"), {
+        clipPath: "inset(100% 0% 0% 0%)",
+        duration: DUR.reveal,
+        ease: EASE.enter,
+        scrollTrigger: { trigger: el, start: "top 66%" },
+      });
     }, el);
 
     return () => mm.revert();
@@ -42,12 +51,15 @@ export default function AboutScene() {
   return (
     <section id="about" className="scene" ref={root}>
       <div className="about-grid">
-        <div className="stack-tight soft-in">
-          <span className="tick" />
+        <div className="about-id stack-tight">
+          <div className="portrait">
+            <Visual name="portrait" width={760} height={711} />
+          </div>
+          <span className="tick soft-in" />
           {about.identity.map((line, i) => (
             <p
               key={line}
-              className="t-mono"
+              className="t-mono soft-in"
               style={{ color: i === 0 ? "var(--white)" : "var(--dim)" }}
             >
               {line}

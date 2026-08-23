@@ -12,11 +12,6 @@ export default function CapabilitiesVisual() {
   return (
     <Layer
       id="capabilities"
-      place={{
-        justifyItems: "center",
-        alignItems: "center",
-        paddingBottom: "clamp(1rem, 6vh, 5rem)",
-      }}
       pointer={{ "--px": "4px", "--py": "4px" } as React.CSSProperties}
     >
       <Visual
