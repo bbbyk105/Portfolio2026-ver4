@@ -1,0 +1,707 @@
+@import "tailwindcss";
+
+/* ───────────────────────────────────────────────────────────────
+   TOKENS
+   Monochrome by default. Blue is sampled from the visual assets and
+   spent only where it has to carry meaning.
+   ─────────────────────────────────────────────────────────────── */
+:root {
+  --black: #000000;
+  --off-black: #07080a;
+  --white: #ffffff;
+  --blue: #0f3ff5;
+  --blue-lift: #4a72ff;
+
+  --line: rgba(255, 255, 255, 0.14);
+  --line-soft: rgba(255, 255, 255, 0.07);
+  --dim: rgba(255, 255, 255, 0.42);
+  --dimmer: rgba(255, 255, 255, 0.26);
+
+  --gutter: clamp(1.25rem, 4vw, 4.5rem);
+  --stage-z: 2;
+
+  /* Pointer field, written once per frame by <PointerField>. Range -1 → 1. */
+  --pointer-x: 0;
+  --pointer-y: 0;
+}
+
+@theme inline {
+  --color-black: var(--black);
+  --color-off-black: var(--off-black);
+  --color-white: var(--white);
+  --color-blue: var(--blue);
+  --color-blue-lift: var(--blue-lift);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--black);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--blue);
+  color: var(--white);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   TYPE
+   ─────────────────────────────────────────────────────────────── */
+.t-display {
+  font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.82;
+  margin: 0;
+}
+
+.t-mono {
+  font-family: var(--font-mono), ui-monospace, "SFMono-Regular", monospace;
+  font-weight: 400;
+  font-size: clamp(0.6rem, 0.72vw, 0.72rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+
+.t-body {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 300;
+  font-size: clamp(0.78rem, 0.94vw, 0.92rem);
+  line-height: 1.75;
+  letter-spacing: 0.005em;
+  color: var(--dim);
+}
+
+.t-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.62);
+}
+
+@media (max-width: 899px) {
+  .t-outline {
+    -webkit-text-stroke-width: 1px;
+  }
+}
+
+.t-blue {
+  color: var(--blue-lift);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   VISUAL STAGE
+   One fixed viewport-sized stage sits behind the scrolling document for
+   the whole hero → work sequence. Text scrolls, imagery does not.
+   ─────────────────────────────────────────────────────────────── */
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: var(--stage-z);
+  pointer-events: none;
+  perspective: 1400px;
+  perspective-origin: 50% 45%;
+  contain: strict;
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Outer node carries only the pointer parallax so GSAP owns the inner
+   node's matrix without the two writers fighting over one transform. */
+.layer-pointer {
+  --px: 8px;
+  --py: 8px;
+  --rx: 1.5deg;
+  --ry: 2deg;
+  transform: translate3d(
+      calc(var(--pointer-x) * var(--px)),
+      calc(var(--pointer-y) * var(--py)),
+      0
+    )
+    rotateX(calc(var(--pointer-y) * var(--rx) * -1))
+    rotateY(calc(var(--pointer-x) * var(--ry)));
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.layer-motion {
+  will-change: transform, opacity;
+  transform-style: preserve-3d;
+}
+
+.layer img {
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Deliberate, restrained visual widths — never full-bleed except the hero. */
+.v-hero {
+  width: clamp(320px, 58vw, 900px);
+}
+.v-caroot {
+  width: clamp(400px, 46vw, 720px);
+}
+.v-protein {
+  width: clamp(400px, 52vw, 820px);
+}
+.v-commerce {
+  width: clamp(360px, 46vw, 720px);
+}
+.v-workflow {
+  width: clamp(380px, 48vw, 760px);
+}
+
+@media (max-width: 899px) {
+  .v-hero {
+    width: 86vw;
+  }
+  .v-caroot,
+  .v-protein,
+  .v-workflow {
+    width: 88vw;
+  }
+  .v-commerce {
+    width: 68vw;
+  }
+}
+
+/* Commerce is one object shown as three separated modules. */
+.module-stack {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.module-stack .module {
+  grid-area: 1 / 1;
+}
+.module-b {
+  opacity: 0.5;
+}
+.module-c {
+  opacity: 0.28;
+}
+
+/* Break-up copy used when CaRoot dissolves into the protein cloud. */
+.shard {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   DOCUMENT / SCENES
+   ─────────────────────────────────────────────────────────────── */
+/* Deliberately no z-index: `.doc` must stay out of the stacking context so
+   individual elements can sit in front of or behind the stage. */
+.doc {
+  position: relative;
+}
+
+.scene {
+  position: relative;
+  padding-inline: var(--gutter);
+}
+
+/* Long scenes give the scrubbed timelines room to breathe. */
+.scene--tall {
+  min-height: 210vh;
+}
+
+.scene-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Text sits above the stage; a couple of hero elements duck behind it. */
+.above {
+  position: relative;
+  z-index: 3;
+}
+.behind {
+  position: relative;
+  z-index: 1;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   NAV
+   ─────────────────────────────────────────────────────────────── */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: clamp(1rem, 2vw, 1.6rem) var(--gutter);
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+.nav a,
+.nav .nav-mark {
+  pointer-events: auto;
+}
+.nav-links {
+  display: flex;
+  gap: clamp(1rem, 2.4vw, 2.4rem);
+}
+.nav-links a {
+  position: relative;
+  color: var(--white);
+  opacity: 0.72;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-links a:hover {
+  opacity: 1;
+}
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.35em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-links a:hover::after {
+  transform: scaleX(1);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   HERO
+   ─────────────────────────────────────────────────────────────── */
+.hero {
+  min-height: 260vh;
+}
+
+.hero-type {
+  font-size: clamp(3.2rem, 17vw, 15.5rem);
+  transform: translateY(-7vh);
+}
+
+.hero-line {
+  display: block;
+  will-change: transform;
+}
+
+.hero-meta {
+  position: absolute;
+  left: var(--gutter);
+  bottom: clamp(1.6rem, 5vh, 3.6rem);
+  max-width: min(26ch, 62vw);
+}
+
+.hero-scroll {
+  position: absolute;
+  right: var(--gutter);
+  bottom: clamp(2rem, 6vh, 4.5rem);
+  color: var(--dimmer);
+}
+
+/* Faint architectural rules that drift with the camera. */
+.rules {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.rules span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--line-soft);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   PROJECT SCENES
+   ─────────────────────────────────────────────────────────────── */
+.project-title {
+  font-size: clamp(2.4rem, 9vw, 8.4rem);
+  width: max-content;
+  max-width: 92vw;
+}
+
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.6rem;
+  color: var(--dim);
+}
+
+.project-statement {
+  max-width: 34ch;
+}
+
+.project-notes {
+  display: flex;
+  gap: 1.4rem;
+  color: var(--dimmer);
+}
+
+.project-notes li {
+  list-style: none;
+}
+
+.project-notes li::before {
+  content: "";
+  display: inline-block;
+  width: 1.4rem;
+  height: 1px;
+  background: currentColor;
+  vertical-align: middle;
+  margin-right: 0.6rem;
+}
+
+/* Each project reserves a different quadrant so no two read alike. */
+.lay-left {
+  align-items: flex-start;
+  text-align: left;
+}
+.lay-right {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.stack-tight > * + * {
+  margin-top: clamp(0.9rem, 2vh, 1.6rem);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   ABOUT
+   ─────────────────────────────────────────────────────────────── */
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(3rem, 8vh, 7rem);
+  padding-block: clamp(8rem, 22vh, 16rem);
+}
+
+@media (min-width: 900px) {
+  .about-grid {
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+}
+
+.about-statement {
+  font-size: clamp(2.1rem, 7.4vw, 6.6rem);
+}
+
+.reveal-line {
+  display: block;
+  overflow: hidden;
+}
+.reveal-line > span {
+  display: block;
+  will-change: transform;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   CAPABILITIES
+   ─────────────────────────────────────────────────────────────── */
+.cap {
+  padding-block: clamp(4rem, 11vh, 8rem) clamp(6rem, 16vh, 12rem);
+}
+
+.cap-heading {
+  font-size: clamp(1.6rem, 4.4vw, 4rem);
+  color: var(--dim);
+}
+
+.cap-field {
+  margin-top: clamp(2.4rem, 7vh, 5rem);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem);
+}
+
+@media (min-width: 900px) {
+  .cap-field {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.cap-term {
+  color: var(--dim);
+  display: block;
+}
+.cap-col > * + * {
+  margin-top: clamp(0.9rem, 2.6vh, 1.9rem);
+}
+/* Nudge individual terms off their column edge so the field never
+   resolves into a table. */
+.cap-col:nth-child(odd) .cap-term:nth-child(2) {
+  transform: translateX(clamp(0.5rem, 2vw, 2.2rem));
+}
+.cap-col:nth-child(even) .cap-term:nth-child(3) {
+  transform: translateX(clamp(0.4rem, 1.5vw, 1.6rem));
+}
+.cap-col:nth-child(even) .cap-term:nth-child(1) {
+  transform: translateX(clamp(0.3rem, 1.1vw, 1.1rem));
+}
+/* Nudge each column off a shared baseline so it reads as a field, not a table. */
+.cap-col:nth-child(2) {
+  transform: translateY(clamp(1rem, 4vh, 3.4rem));
+}
+.cap-col:nth-child(3) {
+  transform: translateY(clamp(0.4rem, 1.6vh, 1.4rem));
+}
+.cap-col:nth-child(4) {
+  transform: translateY(clamp(1.6rem, 6vh, 5rem));
+}
+
+/* ───────────────────────────────────────────────────────────────
+   CONTACT
+   ─────────────────────────────────────────────────────────────── */
+.contact {
+  padding-block: clamp(6rem, 16vh, 12rem) clamp(3rem, 8vh, 6rem);
+}
+
+.contact-type {
+  font-size: clamp(3rem, 15vw, 14rem);
+}
+
+.contact-rail {
+  margin-top: clamp(3rem, 9vh, 7rem);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem clamp(1.4rem, 4vw, 4rem);
+  align-items: baseline;
+  border-top: 1px solid var(--line-soft);
+  padding-top: clamp(1.2rem, 3vh, 2rem);
+}
+
+.contact-mail {
+  font-size: clamp(0.95rem, 1.6vw, 1.4rem);
+  letter-spacing: 0.02em;
+  font-family: var(--font-mono), monospace;
+  font-weight: 300;
+}
+
+.colophon {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--dimmer);
+  margin-top: clamp(4rem, 12vh, 9rem);
+}
+
+/* ───────────────────────────────────────────────────────────────
+   REDUCED MOTION
+   Everything settles into a finished, static composition.
+   ─────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .scene--tall,
+  .hero {
+    min-height: 100vh;
+  }
+  .scene-sticky {
+    position: relative;
+    padding-block: clamp(5rem, 14vh, 10rem);
+  }
+  .layer-pointer {
+    transform: none;
+    will-change: auto;
+  }
+  .layer-motion {
+    will-change: auto;
+  }
+  .nav-links a::after {
+    transition: none;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   HERO TYPE PLANES
+   `position: sticky` always opens a stacking context, which would trap
+   every hero line on one z-plane. Two fixed planes instead — one in front
+   of the stage, one behind it — let the architectural object sit inside
+   the wordmark rather than beside it.
+   ─────────────────────────────────────────────────────────────── */
+.type-plane {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-inline: var(--gutter);
+  pointer-events: none;
+}
+.type-plane--back {
+  z-index: 1;
+}
+.type-plane--front {
+  z-index: 3;
+}
+.type-plane .hero-type {
+  width: 100%;
+}
+/* SYSTEMS. is typeset twice: the readable copy lives in the <h1> on the
+   front plane at zero opacity to hold the line box, the visible copy is an
+   aria-hidden duplicate behind the object. */
+.hl-ghost {
+  opacity: 0;
+}
+
+.hero-line--indent {
+  padding-left: clamp(0.1rem, 1.4vw, 2.2rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .type-plane {
+    position: absolute;
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   PROJECT BLOCK PLACEMENT
+   Each project claims a different part of the frame; none of them are
+   cards and none of them repeat the same corner.
+   ─────────────────────────────────────────────────────────────── */
+.project-block {
+  max-width: min(30rem, 42vw);
+  position: relative;
+}
+
+.project--caroot .scene-sticky {
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-bottom: clamp(3rem, 14vh, 10rem);
+}
+.project--protein .scene-sticky {
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-bottom: clamp(3rem, 12vh, 9rem);
+}
+.project--commerce .scene-sticky {
+  justify-content: center;
+  align-items: flex-start;
+  /* Held above centre with padding rather than a transform — GSAP owns the
+     block's transform for the midground drift. */
+  padding-bottom: clamp(4rem, 16vh, 11rem);
+}
+.project--workflow .scene-sticky {
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Protein and Workflow deliberately run their type across the visual. */
+.project--protein .project-block,
+.project--workflow .project-block {
+  max-width: min(34rem, 48vw);
+}
+
+.project-lede {
+  display: flex;
+  gap: clamp(1rem, 3vw, 3rem);
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+@media (max-width: 899px) {
+  .project-block,
+  .project--protein .project-block,
+  .project--workflow .project-block {
+    max-width: 100%;
+  }
+  .project-title {
+    max-width: 100%;
+    width: auto;
+    font-size: clamp(2.4rem, 12vw, 5rem);
+  }
+
+  /* The wordmark keeps the frame; the meta block follows it in flow
+     instead of being pinned to a corner it would otherwise fight. */
+  .hero-type {
+    font-size: clamp(3rem, 17.5vw, 8rem);
+    transform: none;
+  }
+  .hero-meta {
+    position: static;
+    margin-top: clamp(2.6rem, 8vh, 4rem);
+    max-width: 100%;
+  }
+  /* The role line wraps into the links at this width. */
+  .nav-role {
+    display: none;
+  }
+  .cap-col:nth-child(n) .cap-term {
+    transform: none;
+  }
+  .project--protein .scene-sticky,
+  .project--commerce .scene-sticky {
+    justify-content: center;
+    padding-block: 0;
+  }
+  .project-notes {
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+}
+
+/* A single hairline that measures the scene rather than boxing it in. */
+.tick {
+  display: block;
+  width: clamp(2.4rem, 8vw, 6rem);
+  height: 1px;
+  background: var(--line);
+}
+
+/* Line masks — reveals slide out of a clipped box instead of fading. */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+}
+
+/* Containing block for the hero planes once they drop out of `fixed`. */
+.hero-root {
+  position: relative;
+}
