@@ -1010,15 +1010,25 @@ img {
 }
 
 @media (max-width: 899px) {
-  .nav-links {
+  /* Scoped to the fixed bar: the contact rail reuses the link styling and
+     must keep its links on mobile. */
+  .nav .nav-links {
     display: none;
   }
   .burger {
     display: block;
   }
-  /* The panel is opaque black; difference blending would invert it. */
+  /* The panel is opaque black; difference blending would invert it. On a
+     transparent bar the page copy scrolls straight through the name, so the
+     bar carries its own fade-to-black ground. */
   .nav {
     mix-blend-mode: normal;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.78) 55%,
+      rgba(0, 0, 0, 0) 100%
+    );
   }
   .progress {
     padding-bottom: 0.45rem;
@@ -1041,6 +1051,17 @@ img {
     align-items: flex-start;
     padding-top: 0;
     padding-bottom: clamp(3.5rem, 11vh, 6rem);
+  }
+  /* Ten glyphs of SOMETHING. at 15vw run off a 390px frame. */
+  .contact-type {
+    font-size: clamp(2.6rem, 12.5vw, 5.5rem);
+  }
+  /* Clear the fixed progress rail instead of sitting on it. */
+  .contact {
+    padding-bottom: clamp(5rem, 13vh, 8rem);
+  }
+  .colophon {
+    margin-top: clamp(3rem, 9vh, 6rem);
   }
 }
 
@@ -1072,6 +1093,6 @@ img {
 
 @media (max-width: 899px) {
   .portrait {
-    width: clamp(96px, 28vw, 132px);
+    width: clamp(116px, 34vw, 160px);
   }
 }
