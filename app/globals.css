@@ -178,10 +178,13 @@ img {
   width: clamp(400px, 52vw, 820px);
 }
 .v-commerce {
-  width: clamp(360px, 46vw, 720px);
+  width: clamp(380px, 48vw, 760px);
 }
 .v-workflow {
-  width: clamp(380px, 48vw, 760px);
+  width: clamp(400px, 50vw, 800px);
+}
+.v-about {
+  width: clamp(340px, 42vw, 660px);
 }
 
 @media (max-width: 899px) {
@@ -194,7 +197,10 @@ img {
     width: 88vw;
   }
   .v-commerce {
-    width: 68vw;
+    width: 84vw;
+  }
+  .v-about {
+    width: 76vw;
   }
 }
 
@@ -206,12 +212,6 @@ img {
 }
 .module-stack .module {
   grid-area: 1 / 1;
-}
-.module-b {
-  opacity: 0.5;
-}
-.module-c {
-  opacity: 0.28;
 }
 
 /* Break-up copy used when CaRoot dissolves into the protein cloud. */

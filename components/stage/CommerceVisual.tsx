@@ -2,9 +2,11 @@ import Visual from "./Visual";
 import { Layer } from "./layers";
 
 /**
- * The same architectural object as the hero, shown as three offset modules.
- * Reusing the object is deliberate: the commerce platform reads as the
- * hero geometry taken apart rather than a new picture.
+ * The modular structure, split into its two halves by clip-path rather than
+ * by two different files. Both halves are the same image at the same size,
+ * so when they sit at x: 0 they compose the original exactly — which is what
+ * lets the modules pull apart and lock back together under scroll without a
+ * seam.
  */
 export default function CommerceVisual() {
   return (
@@ -13,34 +15,30 @@ export default function CommerceVisual() {
       place={{
         justifyItems: "end",
         alignItems: "end",
-        paddingRight: "clamp(1rem, 6vw, 7rem)",
+        paddingRight: "clamp(1rem, 5vw, 6rem)",
         paddingBottom: "clamp(2rem, 10vh, 8rem)",
       }}
       pointer={{ "--px": "6px", "--py": "6px" } as React.CSSProperties}
     >
       <div className="module-stack">
-        <div className="module module-c">
-          <Visual
-            name="hero-object"
-            width={1448}
-            height={1086}
-            className="v-commerce"
-          />
-        </div>
+        {/* right cluster */}
         <div className="module module-b">
           <Visual
-            name="hero-object"
+            name="commerce-modules"
             width={1448}
             height={1086}
             className="v-commerce"
+            style={{ clipPath: "inset(0 0 0 34%)" }}
           />
         </div>
+        {/* left block */}
         <div className="module module-a">
           <Visual
-            name="hero-object"
+            name="commerce-modules"
             width={1448}
             height={1086}
             className="v-commerce"
+            style={{ clipPath: "inset(0 66% 0 0)" }}
           />
         </div>
       </div>

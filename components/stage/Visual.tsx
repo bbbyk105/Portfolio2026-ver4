@@ -1,8 +1,15 @@
 type Props = {
-  name: "hero-object" | "caroot-flow" | "protein-cloud" | "workflow-routing";
+  name:
+    | "hero-object"
+    | "caroot-flow"
+    | "protein-cloud"
+    | "commerce-modules"
+    | "workflow-diagram"
+    | "workflow-routing";
   width: number;
   height: number;
   className?: string;
+  style?: React.CSSProperties;
   priority?: boolean;
 };
 
@@ -18,6 +25,7 @@ export default function Visual({
   width,
   height,
   className,
+  style,
   priority = false,
 }: Props) {
   return (
@@ -34,6 +42,7 @@ export default function Visual({
       aria-hidden="true"
       draggable={false}
       className={className}
+      style={style}
       loading={priority ? "eager" : "lazy"}
       decoding="async"
       fetchPriority={priority ? "high" : "low"}

@@ -14,9 +14,9 @@ export default function WorkflowVisual() {
       pointer={{ "--px": "5px", "--py": "5px" } as React.CSSProperties}
     >
       <Visual
-        name="workflow-routing"
-        width={1448}
-        height={1086}
+        name="workflow-diagram"
+        width={1536}
+        height={1024}
         className="v-workflow"
       />
     </Layer>

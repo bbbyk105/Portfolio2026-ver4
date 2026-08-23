@@ -8,6 +8,7 @@ import CaRootVisual from "./stage/CaRootVisual";
 import ProteinVisual from "./stage/ProteinVisual";
 import CommerceVisual from "./stage/CommerceVisual";
 import WorkflowVisual from "./stage/WorkflowVisual";
+import CapabilitiesVisual from "./stage/CapabilitiesVisual";
 
 /**
  * The stage is the spine of the site.
@@ -46,6 +47,7 @@ export default function VisualStage() {
         const protein = q('[data-layer="protein"]');
         const commerce = q('[data-layer="commerce"]');
         const workflow = q('[data-layer="workflow"]');
+        const caps = q('[data-layer="capabilities"]');
         const motionOf = (layer: Element[]) =>
           layer.map((n) => n.querySelector(".layer-motion") as Element);
 
@@ -54,7 +56,7 @@ export default function VisualStage() {
            scene and crossfades when that scene owns the viewport, which
            leaves a finished, static composition at every scroll stop. */
         if (reduced) {
-          gsap.set([hero, caroot, protein, commerce, workflow], {
+          gsap.set([hero, caroot, protein, commerce, workflow, caps], {
             autoAlpha: 0,
           });
           gsap.set(hero, { autoAlpha: 1 });
@@ -65,6 +67,7 @@ export default function VisualStage() {
             [protein, "#p-protein"],
             [commerce, "#p-commerce"],
             [workflow, "#p-workflow"],
+            [caps, "#capabilities"],
           ];
           pairs.forEach(([layer, scene]) => {
             ScrollTrigger.create({
@@ -73,7 +76,8 @@ export default function VisualStage() {
               end: "bottom 40%",
               onToggle: ({ isActive }) =>
                 gsap.to(layer, {
-                  autoAlpha: isActive ? 1 : 0,
+                  // The routing graphic stays a background at any scroll stop.
+                  autoAlpha: isActive ? (layer === caps ? 0.32 : 1) : 0,
                   duration: 0.4,
                   overwrite: true,
                 }),
@@ -85,7 +89,7 @@ export default function VisualStage() {
         /* Amplitude scale — mobile keeps the art direction but travels less. */
         const k = desktop ? 1 : 0.5;
 
-        gsap.set([caroot, protein, commerce, workflow], { autoAlpha: 0 });
+        gsap.set([caroot, protein, commerce, workflow, caps], { autoAlpha: 0 });
         gsap.set(hero, { autoAlpha: 1 });
         gsap.set(motionOf(hero), { scale: 0.88, rotate: -0.6 });
 
@@ -305,7 +309,6 @@ export default function VisualStage() {
            scroll, then separate for good on the way out. */
         const modA = q(".module-a");
         const modB = q(".module-b");
-        const modC = q(".module-c");
 
         gsap.fromTo(
           commerce,
@@ -337,15 +340,16 @@ export default function VisualStage() {
             { scale: 1, filter: "blur(0px)", ease: "none", duration: 1 },
             0,
           )
+          // The halves arrive from opposite sides and lock together.
           .fromTo(
-            modB,
-            { x: vw(-0.16 * k), y: vh(0.1 * k) },
+            modA,
+            { x: vw(-0.14 * k), y: vh(0.07 * k) },
             { x: 0, y: 0, ease: "none", duration: 1 },
             0,
           )
           .fromTo(
-            modC,
-            { x: vw(0.15 * k), y: vh(-0.11 * k) },
+            modB,
+            { x: vw(0.14 * k), y: vh(-0.08 * k) },
             { x: 0, y: 0, ease: "none", duration: 1 },
             0,
           );
@@ -360,9 +364,8 @@ export default function VisualStage() {
               invalidateOnRefresh: true,
             },
           })
-          .to(modA, { x: -20 * k, ease: "none", duration: 1 }, 0)
-          .to(modB, { y: 15 * k, ease: "none", duration: 1 }, 0)
-          .to(modC, { scale: 1 + 0.06 * k, ease: "none", duration: 1 }, 0)
+          .to(modA, { x: -18 * k, y: 6 * k, ease: "none", duration: 1 }, 0)
+          .to(modB, { x: 16 * k, y: -8 * k, ease: "none", duration: 1 }, 0)
           .to(
             motionOf(commerce),
             { rotate: 1.4 * k, y: vh(-0.03 * k), ease: "none", duration: 1 },
@@ -379,9 +382,8 @@ export default function VisualStage() {
               invalidateOnRefresh: true,
             },
           })
-          .to(modA, { x: vw(-0.1 * k), ease: "none", duration: 1 }, 0)
-          .to(modB, { x: vw(0.09 * k), y: vh(0.05 * k), ease: "none", duration: 1 }, 0)
-          .to(modC, { y: vh(-0.07 * k), ease: "none", duration: 1 }, 0)
+          .to(modA, { x: vw(-0.1 * k), y: vh(0.04 * k), ease: "none", duration: 1 }, 0)
+          .to(modB, { x: vw(0.1 * k), y: vh(-0.05 * k), ease: "none", duration: 1 }, 0)
           .to(
             motionOf(commerce),
             { filter: "blur(9px)", ease: "none", duration: 1 },
@@ -456,6 +458,49 @@ export default function VisualStage() {
             0,
           )
           .to(workflow, { autoAlpha: 0, ease: "none", duration: 0.8 }, 0.2);
+        /* ── CAPABILITIES ───────────────────────────────────────────
+           Not a project visual: a background the term field is set over,
+           kept dim and slow so it never competes with the type. */
+        gsap.fromTo(
+          caps,
+          { autoAlpha: 0 },
+          {
+            autoAlpha: 0.32,
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#capabilities",
+              start: "top 85%",
+              end: "top 35%",
+              scrub: 1,
+            },
+          },
+        );
+        gsap.fromTo(
+          motionOf(caps),
+          { scale: 1.12, y: vh(0.05 * k) },
+          {
+            scale: 1,
+            y: vh(-0.05 * k),
+            ease: "none",
+            scrollTrigger: {
+              trigger: "#capabilities",
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+        gsap.to(caps, {
+          autoAlpha: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#capabilities",
+            start: "bottom 60%",
+            end: "bottom 15%",
+            scrub: 1,
+          },
+        });
       },
     );
 
@@ -477,6 +522,7 @@ export default function VisualStage() {
       <ProteinVisual />
       <CommerceVisual />
       <WorkflowVisual />
+      <CapabilitiesVisual />
     </div>
   );
 }
