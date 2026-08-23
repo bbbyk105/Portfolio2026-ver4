@@ -322,8 +322,14 @@ img {
   position: relative;
 }
 
+/* Above the stage, and therefore above its scrim. Without this the About,
+   Capabilities and Contact scenes paint UNDER the scrim — they have no sticky
+   child to carry a z-index of their own — and the whole lower half of the
+   page is dimmed by a gradient meant only to protect copy sitting on top of
+   a bright render. */
 .scene {
   position: relative;
+  z-index: 3;
   padding-inline: var(--gutter);
 }
 
@@ -1047,7 +1053,8 @@ img {
 /* ───────────────────────────────────────────────────────────────
    PORTRAIT
    A small square photographic plate — a tight crop on the face inside a
-   hard rectangle. Explicitly NOT a cut-out bust floating on black: a
+   hard rectangle, in colour, squared on the head's measured centre.
+   Explicitly NOT a desaturated cut-out bust floating on black: a
    monochrome suit-and-tie silhouette framed that way reads as a memorial
    portrait, which is not what this page is.
    ─────────────────────────────────────────────────────────────── */

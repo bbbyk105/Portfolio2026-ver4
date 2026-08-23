@@ -9,6 +9,9 @@ type Props = {
     | "portrait";
   width: number;
   height: number;
+  /** Intrinsic width of the @sm variant; both candidates need honest
+      descriptors or the browser picks between two identical claims. */
+  smWidth?: number;
   className?: string;
   style?: React.CSSProperties;
   priority?: boolean;
@@ -27,6 +30,7 @@ export default function Visual({
   name,
   width,
   height,
+  smWidth = 760,
   className,
   style,
   priority = false,
@@ -38,7 +42,7 @@ export default function Visual({
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={`/visuals/${name}.webp`}
-      srcSet={`/visuals/${name}@sm.webp 760w, /visuals/${name}.webp ${width}w`}
+      srcSet={`/visuals/${name}@sm.webp ${smWidth}w, /visuals/${name}.webp ${width}w`}
       sizes="(max-width: 899px) 80vw, 55vw"
       width={width}
       height={height}

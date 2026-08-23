@@ -57,6 +57,7 @@ export default function AboutScene() {
               name="portrait"
               width={760}
               height={760}
+              smWidth={380}
               alt="Byakko Kondo"
             />
           </div>
