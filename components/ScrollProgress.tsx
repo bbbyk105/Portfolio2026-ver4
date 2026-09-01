@@ -1,11 +1,12 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/motion";
+import { gsap, ScrollTrigger, MQ, EASE, DUR } from "@/lib/motion";
 import { useIsoLayoutEffect } from "@/lib/useIsoLayoutEffect";
 
 const SECTIONS: [string, string][] = [
   ["#hero", "BUILD DIGITAL SYSTEMS"],
+  ["#work", "WORK — 2025—2026"],
   ["#p-caroot", "WORK — CAROOT"],
   ["#p-protein", "WORK — PROTEIN STRUCTURE"],
   ["#p-commerce", "WORK — CLIENT COMMERCE"],
@@ -50,13 +51,24 @@ export default function ScrollProgress() {
       );
     });
 
+    const reduced = window.matchMedia(MQ.reduced).matches;
     const triggers = SECTIONS.map(([sel, name]) =>
       ScrollTrigger.create({
         trigger: sel,
         start: "top 55%",
         end: "bottom 45%",
         onToggle: ({ isActive }) => {
-          if (isActive) labelEl.textContent = name;
+          if (!isActive) return;
+          labelEl.textContent = name;
+          // The new name rises into place — a readout ticking over, not a
+          // string being swapped.
+          if (!reduced) {
+            gsap.fromTo(
+              labelEl,
+              { y: 7, opacity: 0 },
+              { y: 0, opacity: 1, duration: DUR.micro, ease: EASE.glide, overwrite: true },
+            );
+          }
         },
       }),
     );

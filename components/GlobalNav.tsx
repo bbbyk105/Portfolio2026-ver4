@@ -2,9 +2,10 @@
 
 import { useCallback, useRef, useState } from "react";
 import { nav, contact } from "@/lib/content";
-import { gsap, EASE, MQ } from "@/lib/motion";
+import { gsap, EASE, DUR, MQ } from "@/lib/motion";
 import { useIsoLayoutEffect } from "@/lib/useIsoLayoutEffect";
 import { lockScroll, unlockScroll } from "@/lib/lenisRef";
+import NavAnchor from "@/components/NavAnchor";
 
 /**
  * Hairline navigation set in `mix-blend-mode: difference` so it inverts
@@ -69,6 +70,22 @@ export default function GlobalNav() {
         );
 
       tl.current = t;
+
+      // The chrome arrives after the headline has started — top-down and
+      // lightly, so it never competes with the hero's own entrance.
+      // The links fade as one block, not one by one: `.nav-links a` carries a
+      // CSS opacity and a transition of its own, and a `from` tween reading
+      // that mid-transition is what used to leave them stranded at zero.
+      if (!reduced) {
+        gsap.from([".nav-mark", ".nav-links", ".nav-cta", ".burger"], {
+          opacity: 0,
+          y: -6,
+          duration: DUR.swap,
+          ease: EASE.glide,
+          stagger: 0.06,
+          delay: 0.4,
+        });
+      }
     }, el);
 
     // Hero animations run on load; make sure the panel starts hidden.
@@ -110,19 +127,32 @@ export default function GlobalNav() {
     <div ref={root}>
       <header className="nav">
         <div className="nav-mark t-mono">
-          <span>BYAKKO KONDO</span>
+          <NavAnchor
+            href="/#hero"
+            className="nav-home"
+            aria-label="Byakko Kondo — home"
+          >
+            <span className="nav-glyph" aria-hidden="true" />
+            BYAKKO KONDO
+          </NavAnchor>
           <span className="nav-role block" style={{ color: "var(--dim)" }}>
             ENGINEER / CREATIVE DEVELOPER
           </span>
         </div>
 
-        <nav className="nav-links t-mono" aria-label="Primary">
-          {nav.map((item) => (
-            <a key={item.href} href={item.href}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
+        <div className="nav-right">
+          <nav className="nav-links t-mono" aria-label="Primary">
+            {nav.map((item) => (
+              <NavAnchor key={item.href} href={item.href}>
+                {item.label}
+              </NavAnchor>
+            ))}
+          </nav>
+
+          <NavAnchor className="nav-cta t-mono" href="/#contact">
+            GET IN TOUCH
+          </NavAnchor>
+        </div>
 
         <button
           type="button"
@@ -139,8 +169,18 @@ export default function GlobalNav() {
 
       <div id="site-menu" className="menu" hidden={false} aria-hidden={!open}>
         <nav className="menu-list" aria-label="Menu">
+          {/* The wordmark is the way home on desktop; in the panel it needs
+              saying, since the panel is the whole screen. */}
+          <NavAnchor
+            href="/#hero"
+            className="menu-line"
+            tabIndex={open ? 0 : -1}
+            onClick={() => toggle(false)}
+          >
+            <span className="menu-item t-display">HOME</span>
+          </NavAnchor>
           {nav.map((item) => (
-            <a
+            <NavAnchor
               key={item.href}
               href={item.href}
               className="menu-line"
@@ -148,7 +188,7 @@ export default function GlobalNav() {
               onClick={() => toggle(false)}
             >
               <span className="menu-item t-display">{item.label}</span>
-            </a>
+            </NavAnchor>
           ))}
         </nav>
         <div className="menu-foot t-mono">

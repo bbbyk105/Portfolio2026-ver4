@@ -3,6 +3,14 @@
  * redesign changes art direction, not content.
  */
 
+export type Snippet = {
+  /** Tab label (also the language name). */
+  label: string;
+  filename: string;
+  /** One entry per rendered line; keep them short — the window never wraps. */
+  lines: string[];
+};
+
 export type Project = {
   id: "caroot" | "protein" | "commerce" | "workflow";
   /** Display title, split into the lines it is typeset on. */
@@ -13,6 +21,10 @@ export type Project = {
   statement: string;
   /** Short technical notes set as a hairline list beside the statement. */
   notes: string[];
+  /** Wide cards span both columns of the work grid. */
+  wide?: boolean;
+  /** The snippet the card's code window runs. */
+  code: Snippet;
 };
 
 export const projects: Project[] = [
@@ -24,6 +36,18 @@ export const projects: Project[] = [
     statement:
       "Scalable data pipelines and processing infrastructure for biological research platforms.",
     notes: ["Ingest", "Reasoning", "Delivery"],
+    wide: true,
+    code: {
+      label: "Python",
+      filename: "pipeline.py",
+      lines: [
+        "from caroot import Pipeline",
+        "",
+        'pipe = Pipeline(sources=["barcode", "label", "photo"])',
+        "record = pipe.normalise().model().record()",
+        "pipe.deliver(record)",
+      ],
+    },
   },
   {
     id: "protein",
@@ -33,6 +57,17 @@ export const projects: Project[] = [
     statement:
       "Automated protein structure prediction workflows with intelligent orchestration.",
     notes: ["Prediction", "Orchestration", "Validation"],
+    code: {
+      label: "Python",
+      filename: "fold.py",
+      lines: [
+        "from byakko import fold",
+        "",
+        'job = fold.predict(sequence, model="v3")',
+        "job.validate()",
+        "fold.publish(job.structure)",
+      ],
+    },
   },
   {
     id: "commerce",
@@ -42,6 +77,18 @@ export const projects: Project[] = [
     statement:
       "Composable commerce platform built for scale, flexibility, and developer velocity.",
     notes: ["Storefront", "Services", "Edge"],
+    code: {
+      label: "TypeScript",
+      filename: "storefront.ts",
+      lines: [
+        'import { compose } from "@byakko/commerce";',
+        "",
+        "export const storefront = compose({",
+        '  services: ["catalog", "cart", "checkout"],',
+        "  edge: true,",
+        "});",
+      ],
+    },
   },
   {
     id: "workflow",
@@ -51,15 +98,80 @@ export const projects: Project[] = [
     statement:
       "Operational infrastructure for monitoring, scheduling, and managing distributed jobs.",
     notes: ["Schedule", "Observe", "Recover"],
+    wide: true,
+    code: {
+      label: "Go",
+      filename: "scheduler.go",
+      lines: [
+        "sched := workflow.NewScheduler()",
+        "",
+        "sched.Every(schedule.Minute, jobs.Observe)",
+        "sched.On(jobs.Failed, jobs.Recover)",
+        "sched.Run()",
+      ],
+    },
   },
 ];
 
 export const hero = {
-  lines: ["BUILD", "DIGITAL", "SYSTEMS."],
-  name: "BYAKKO KONDO",
-  role: "ENGINEER / CREATIVE DEVELOPER",
+  eyebrow: "BYAKKO KONDO — ENGINEER / CREATIVE DEVELOPER",
+  /** Two-line headline; the last line is set faint, Daytona's gray second act. */
+  lines: ["BUILD DIGITAL", "SYSTEMS."],
   intro:
     "I design and build scalable digital systems at the intersection of infrastructure, intelligence, and experience.",
+  ctas: [
+    { label: "VIEW WORK", href: "#work" },
+    { label: "GET IN TOUCH", href: "#contact" },
+  ],
+  /** The hero code window's language tabs — Daytona's hero signature. */
+  tabs: [
+    {
+      label: "TypeScript",
+      filename: "system.ts",
+      lines: [
+        'import { System } from "@byakko/core";',
+        "",
+        'const system = new System({ base: "Tokyo", year: 2026 });',
+        "await system.design();",
+        'await system.build(["infra", "intelligence", "experience"]);',
+        "system.ship();",
+      ],
+    },
+    {
+      label: "Python",
+      filename: "system.py",
+      lines: [
+        "from byakko import System",
+        "",
+        'system = System(base="Tokyo", year=2026)',
+        "system.design()",
+        'system.build(["infra", "intelligence", "experience"])',
+        "system.ship()",
+      ],
+    },
+    {
+      label: "Go",
+      filename: "system.go",
+      lines: [
+        "package main",
+        "",
+        "func main() {",
+        '    s := byakko.NewSystem("Tokyo", 2026)',
+        "    s.Design()",
+        '    s.Build("infra", "intelligence", "experience")',
+        "    s.Ship()",
+        "}",
+      ],
+    },
+  ] as Snippet[],
+};
+
+export const work = {
+  headline: ["SELECTED SYSTEMS,", "2025—2026."],
+};
+
+export const marquee = {
+  label: "STACK IN PRODUCTION",
 };
 
 export const about = {
@@ -72,22 +184,40 @@ export const about = {
 };
 
 /**
- * Capabilities are placed spatially rather than tabulated — the `column`
- * value is only a hint for where a term settles in the field.
+ * The flat term list feeds the marquee; the grouped view feeds the
+ * capabilities tabs. Keep the two in step — same terms in both.
  */
-export const capabilities: { label: string; column: 0 | 1 | 2 | 3 }[] = [
-  { label: "TypeScript", column: 0 },
-  { label: "Python", column: 0 },
-  { label: "Go", column: 0 },
-  { label: "Next.js", column: 1 },
-  { label: "React", column: 1 },
-  { label: "FastAPI", column: 1 },
-  { label: "Supabase", column: 2 },
-  { label: "PostgreSQL", column: 2 },
-  { label: "Docker", column: 2 },
-  { label: "AWS", column: 3 },
-  { label: "Terraform", column: 3 },
-  { label: "Kubernetes", column: 3 },
+export const capabilities: string[] = [
+  "TypeScript",
+  "Python",
+  "Go",
+  "Next.js",
+  "React",
+  "FastAPI",
+  "Supabase",
+  "PostgreSQL",
+  "Docker",
+  "AWS",
+  "Terraform",
+  "Kubernetes",
+];
+
+export type CapabilityGroup = {
+  label: string;
+  /** Lowercase single word — the panel shows it as `$ stack --<slug>`. */
+  slug: string;
+  items: string[];
+};
+
+export const capabilityGroups: CapabilityGroup[] = [
+  { label: "LANGUAGES", slug: "languages", items: ["TypeScript", "Python", "Go"] },
+  { label: "FRAMEWORKS", slug: "frameworks", items: ["Next.js", "React", "FastAPI"] },
+  { label: "PLATFORM", slug: "platform", items: ["Supabase", "PostgreSQL", "Docker"] },
+  {
+    label: "INFRASTRUCTURE",
+    slug: "infra",
+    items: ["AWS", "Terraform", "Kubernetes"],
+  },
 ];
 
 export const contact = {
@@ -100,8 +230,10 @@ export const contact = {
   ],
 };
 
+/** Site navigation. Home sections carry the leading slash so they resolve
+    from every page; on the home page itself they still scroll smoothly. */
 export const nav = [
-  { label: "WORK", href: "#work" },
-  { label: "ABOUT", href: "#about" },
-  { label: "CONTACT", href: "#contact" },
+  { label: "WORK", href: "/works" },
+  { label: "ABOUT", href: "/#about" },
+  { label: "CONTACT", href: "/#contact" },
 ];

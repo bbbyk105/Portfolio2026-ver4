@@ -1,15 +1,17 @@
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 
 if (typeof window !== "undefined") {
   // registerPlugin is idempotent, so a second module evaluation is harmless.
-  gsap.registerPlugin(ScrollTrigger);
+  // MotionPath carries the schematics' packets along their rails.
+  gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
   // Mobile browsers resize the viewport as the URL bar collapses; refreshing
   // every ScrollTrigger on that is what makes pinned scenes jump.
   ScrollTrigger.config({ ignoreMobileResize: true });
 }
 
-export { gsap, ScrollTrigger };
+export { gsap, ScrollTrigger, MotionPathPlugin };
 
 /**
  * One easing vocabulary for the whole site. Nothing uses a raw CSS

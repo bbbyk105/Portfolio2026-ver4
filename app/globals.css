@@ -2,32 +2,33 @@
 
 /* ───────────────────────────────────────────────────────────────
    TOKENS
-   Monochrome by default. Blue is sampled from the visual assets and
-   spent only where it has to carry meaning.
+   Daytonesque dark: a near-black page, raised #141414 panels inside
+   hairline borders, and one sky blue spent where it has to carry meaning.
    ─────────────────────────────────────────────────────────────── */
 :root {
-  --black: #000000;
-  --off-black: #07080a;
-  --white: #ffffff;
-  --blue: #0f3ff5;
-  --blue-lift: #4a72ff;
+  --black: #0a0a0a;
+  --panel: #141414;
+  --panel-deep: #000000;
+  --white: #ededed;
+  --blue: #0099ff;
+  --blue-lift: #47b5ff;
 
-  --line: rgba(255, 255, 255, 0.2);
-  --line-soft: rgba(255, 255, 255, 0.1);
+  --line: rgba(255, 255, 255, 0.16);
+  --line-soft: rgba(255, 255, 255, 0.08);
   --dim: rgba(255, 255, 255, 0.62);
-  --dimmer: rgba(255, 255, 255, 0.42);
+  --dimmer: rgba(255, 255, 255, 0.4);
+  /* The gray second line of a headline — Daytona's signature. */
+  --faint: rgba(255, 255, 255, 0.34);
+
+  --r-lg: 16px;
+  --r-md: 10px;
 
   --gutter: clamp(1.25rem, 4vw, 4.5rem);
-  --stage-z: 2;
-
-  /* Pointer field, written once per frame by <PointerField>. Range -1 → 1. */
-  --pointer-x: 0;
-  --pointer-y: 0;
 }
 
 @theme inline {
   --color-black: var(--black);
-  --color-off-black: var(--off-black);
+  --color-panel: var(--panel);
   --color-white: var(--white);
   --color-blue: var(--blue);
   --color-blue-lift: var(--blue-lift);
@@ -56,7 +57,7 @@ body {
 
 ::selection {
   background: var(--blue);
-  color: var(--white);
+  color: var(--black);
 }
 
 a {
@@ -74,9 +75,9 @@ img {
    ─────────────────────────────────────────────────────────────── */
 .t-display {
   font-family: var(--font-display), "Helvetica Neue", Arial, sans-serif;
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 0.82;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
   margin: 0;
 }
 
@@ -98,270 +99,168 @@ img {
   color: var(--dim);
 }
 
-.t-outline {
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.62);
+.t-faint {
+  color: var(--faint);
 }
 
-@media (max-width: 899px) {
-  .t-outline {
-    -webkit-text-stroke-width: 1px;
-  }
+/* Line masks — reveals slide out of a clipped box instead of fading. */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
 }
-
-.t-blue {
-  color: var(--blue-lift);
-}
-
-/* ───────────────────────────────────────────────────────────────
-   VISUAL STAGE
-   One fixed viewport-sized stage sits behind the scrolling document for
-   the whole hero → work sequence. Text scrolls, imagery does not.
-   ─────────────────────────────────────────────────────────────── */
-.stage {
-  position: fixed;
-  inset: 0;
-  z-index: var(--stage-z);
-  pointer-events: none;
-  perspective: 1400px;
-  perspective-origin: 50% 45%;
-  contain: strict;
-}
-
-.layer {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  opacity: 0;
-  visibility: hidden;
-  transform-style: preserve-3d;
-}
-
-/* Outer node carries only the pointer parallax so GSAP owns the inner
-   node's matrix without the two writers fighting over one transform. */
-.layer-pointer {
-  --px: 8px;
-  --py: 8px;
-  --rx: 1.5deg;
-  --ry: 2deg;
-  transform: translate3d(
-      calc(var(--pointer-x) * var(--px)),
-      calc(var(--pointer-y) * var(--py)),
-      0
-    )
-    rotateX(calc(var(--pointer-y) * var(--rx) * -1))
-    rotateY(calc(var(--pointer-x) * var(--ry)));
-  transform-style: preserve-3d;
+.line-mask > span {
+  display: block;
   will-change: transform;
 }
 
-.layer-motion {
-  will-change: transform, opacity;
-  transform-style: preserve-3d;
+.stack-tight > * + * {
+  margin-top: clamp(0.9rem, 2vh, 1.6rem);
 }
 
-.layer img {
-  height: auto;
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* ── Layer placement ───────────────────────────────────────────
-   Desktop keeps type on the left and imagery on the right, so the two
-   never touch. */
-.layer--hero {
-  align-items: center;
-  justify-items: center;
-}
-.layer--caroot {
-  justify-items: end;
-  align-items: start;
-  padding-right: clamp(2rem, 8vw, 9rem);
-  padding-top: clamp(3rem, 12vh, 8rem);
-}
-.layer--protein {
-  justify-items: end;
-  align-items: start;
-  padding-right: clamp(1rem, 4vw, 4rem);
-  padding-top: clamp(2rem, 8vh, 6rem);
-}
-.layer--commerce {
-  justify-items: end;
-  align-items: end;
-  padding-right: clamp(1rem, 5vw, 6rem);
-  padding-bottom: clamp(2rem, 10vh, 8rem);
-}
-.layer--workflow {
-  justify-items: center;
-  align-items: start;
-  padding-top: clamp(3rem, 12vh, 9rem);
-  padding-right: clamp(0rem, 4vw, 4rem);
-}
-.layer--capabilities {
-  justify-items: center;
-  align-items: center;
-  padding-bottom: clamp(1rem, 6vh, 5rem);
-}
-
-/* ── Legibility scrim ──────────────────────────────────────────
-   The type sits in front of the stage, and against a bright render it
-   loses. A plain directional gradient — no blur, no panel — guarantees
-   the copy always has a near-black ground under it: on desktop the left
-   column where the type lives, on mobile the lower band.
-   Painted above every layer but still behind the document. */
-.scrim {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.92) 0%,
-    rgba(0, 0, 0, 0.86) 22%,
-    rgba(0, 0, 0, 0.45) 42%,
-    rgba(0, 0, 0, 0) 60%
-  );
-}
-
-/* Deliberate, restrained visual widths — never full-bleed except the hero. */
-.v-hero {
-  width: clamp(320px, 58vw, 900px);
-}
-.v-caroot {
-  width: clamp(400px, 46vw, 720px);
-}
-.v-protein {
-  width: clamp(400px, 52vw, 820px);
-}
-.v-commerce {
-  width: clamp(380px, 48vw, 760px);
-}
-.v-workflow {
-  width: clamp(400px, 50vw, 800px);
-}
-.v-about {
-  width: clamp(340px, 42vw, 660px);
-}
-
-@media (max-width: 899px) {
-  .v-hero {
-    width: 68vw;
-  }
-  .v-caroot,
-  .v-protein,
-  .v-workflow {
-    width: 82vw;
-  }
-  .v-commerce {
-    width: 78vw;
-  }
-  .v-about {
-    width: 76vw;
-  }
-
-  /* One column, so the visual is pushed into the top third and the copy
-     gets the rest. Padding, not transforms — GSAP owns the transforms. */
-  .layer--caroot,
-  .layer--protein,
-  .layer--commerce,
-  .layer--workflow {
-    justify-items: center;
-    align-items: start;
-    padding: 12vh 0 0;
-  }
-  /* High enough that the object falls where the scrim is still light and
-     only crosses the solid white lines, never the outlined one. */
-  .layer--hero {
-    align-items: start;
-    padding-top: 19vh;
-  }
-  .layer--capabilities {
-    align-items: start;
-    padding-top: 18vh;
-    padding-bottom: 0;
-  }
-
-  .scrim {
-    background: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0) 0%,
-      rgba(0, 0, 0, 0.1) 26%,
-      rgba(0, 0, 0, 0.5) 42%,
-      rgba(0, 0, 0, 0.92) 54%,
-      rgba(0, 0, 0, 0.96) 64%
-    );
-  }
-}
-
-/* Commerce is one object shown as three separated modules. */
-.module-stack {
-  position: relative;
-  display: grid;
-  place-items: center;
-}
-.module-stack .module {
-  grid-area: 1 / 1;
-}
-
-/* Break-up copy used when CaRoot dissolves into the protein cloud. */
-.shard {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  opacity: 0;
-  will-change: transform, opacity;
+/* A single hairline that measures the scene rather than boxing it in. */
+.tick {
+  display: block;
+  width: clamp(2.4rem, 8vw, 6rem);
+  height: 1px;
+  background: var(--line);
 }
 
 /* ───────────────────────────────────────────────────────────────
-   DOCUMENT / SCENES
+   BUTTONS
+   Daytona's pair: a solid white pill and a bordered ghost pill.
    ─────────────────────────────────────────────────────────────── */
-/* Deliberately no z-index: `.doc` must stay out of the stacking context so
-   individual elements can sit in front of or behind the stage. */
-.doc {
-  position: relative;
-}
-
-/* Above the stage, and therefore above its scrim. Without this the About,
-   Capabilities and Contact scenes paint UNDER the scrim — they have no sticky
-   child to carry a z-index of their own — and the whole lower half of the
-   page is dimmed by a gradient meant only to protect copy sitting on top of
-   a bright render. */
-.scene {
-  position: relative;
-  z-index: 3;
-  padding-inline: var(--gutter);
-}
-
-/* Long scenes give the scrubbed timelines room to breathe. */
-/* Long enough for a scrubbed timeline to breathe, short enough that the type
-   is never pinned for more than about half a viewport of scrolling. */
-.scene--tall {
-  min-height: 145vh;
-}
-
-.scene-sticky {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.btn {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  gap: 0.6em;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0.95em 1.9em;
+  transition:
+    background 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    scale 0.2s ease;
+}
+/* Pressed: a touch smaller, on `scale` so it never fights a GSAP transform. */
+.btn:active,
+.pill:active,
+.nav-cta:active {
+  scale: 0.97;
+}
+.btn--primary {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--black);
+}
+.btn--primary:hover {
+  background: transparent;
+  color: var(--white);
+}
+.btn--ghost {
+  border-color: var(--line);
+  color: var(--white);
+}
+.btn--ghost:hover {
+  border-color: var(--white);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-/* Text sits above the stage; a couple of hero elements duck behind it. */
-.above {
-  position: relative;
-  z-index: 3;
-}
-.behind {
+/* ───────────────────────────────────────────────────────────────
+   STRUCTURE
+   Plain stacked document now — no fixed stage. The chrome that survives:
+   full-height column rails, section headers with mono kickers, and the
+   bordered panel frame with corner crosses.
+   ─────────────────────────────────────────────────────────────── */
+.doc {
   position: relative;
   z-index: 1;
 }
 
+.scene {
+  padding: clamp(4.5rem, 13vh, 9.5rem) var(--gutter);
+}
+
+.rails {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.rails span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--line-soft);
+}
+.rails span:first-child {
+  left: var(--gutter);
+}
+.rails span:last-child {
+  right: var(--gutter);
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  margin: 0;
+  color: var(--dim);
+  letter-spacing: 0.2em;
+}
+.kicker-sq {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--dimmer);
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  border-top: 1px solid var(--line-soft);
+  padding-top: clamp(0.8rem, 2vh, 1.2rem);
+  margin: 0 0 clamp(2rem, 6vh, 4rem);
+}
+.section-head-note {
+  margin: 0;
+  color: var(--dimmer);
+}
+
+/* Bordered panel with corner crosses — schematic figures. Padding belongs
+   to the specific panel, not here. */
+.panel {
+  position: relative;
+  border: 1px solid var(--line-soft);
+}
+.panel::before,
+.panel::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  background:
+    linear-gradient(var(--line), var(--line)) center / 9px 1px no-repeat,
+    linear-gradient(var(--line), var(--line)) center / 1px 9px no-repeat;
+}
+.panel::before {
+  top: -5px;
+  left: -5px;
+}
+.panel::after {
+  bottom: -5px;
+  right: -5px;
+}
+
 /* ───────────────────────────────────────────────────────────────
    NAV
+   Hairline navigation in `mix-blend-mode: difference`, links on the right
+   with a small pill CTA — Daytona's "Start Building" slot.
    ─────────────────────────────────────────────────────────────── */
 .nav {
   position: fixed;
@@ -379,6 +278,11 @@ img {
 .nav a,
 .nav .nav-mark {
   pointer-events: auto;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 2.4vw, 2.4rem);
 }
 .nav-links {
   display: flex;
@@ -409,16 +313,94 @@ img {
   transform: scaleX(1);
 }
 
+.nav-cta {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.55em 1.15em;
+  color: var(--white);
+  transition:
+    background 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    scale 0.2s ease;
+}
+.nav-cta:hover {
+  background: var(--white);
+  border-color: var(--white);
+  color: var(--black);
+}
+
+/* The wordmark is the way home; its mark fills as you approach it. */
+.nav-home .nav-glyph {
+  transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-home:hover .nav-glyph {
+  background: currentColor;
+}
+
+/* Small square mark beside the wordmark — inverts with the difference nav. */
+.nav-glyph {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border: 1px solid currentColor;
+  margin-right: 0.7em;
+  vertical-align: middle;
+}
+
 /* ───────────────────────────────────────────────────────────────
    HERO
+   Centred stack — eyebrow, two-line headline (second line faint), one
+   paragraph, two pills — then the visual in a framed panel below. A blue
+   glow behind the head is the only decoration.
    ─────────────────────────────────────────────────────────────── */
 .hero {
-  min-height: 170vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(9rem, 24vh, 14rem) var(--gutter) clamp(3.5rem, 9vh, 6rem);
+  /* The breathing glow grows past the edges on narrow screens; clip it on
+     this axis only, so the panel's shadow below still falls freely. */
+  overflow-x: clip;
+}
+
+.hero-glow {
+  position: absolute;
+  top: -30vh;
+  left: 50%;
+  /* Centred with a margin, not a transform — the transform is the breathing
+     animation's. Never wider than the hero: past 100% it becomes the
+     document's scroll width, and iOS lets the page pan sideways into nothing. */
+  width: min(1100px, 100%);
+  margin-left: max(-550px, -50%);
+  height: 85vh;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(0, 153, 255, 0.16),
+    rgba(0, 153, 255, 0) 70%
+  );
+  pointer-events: none;
+}
+
+.hero-head {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  margin: 0 0 clamp(1.4rem, 3vh, 2.2rem);
+  color: var(--dim);
 }
 
 .hero-type {
-  font-size: clamp(3.2rem, 17vw, 15.5rem);
-  transform: translateY(-7vh);
+  font-size: clamp(3rem, 9.5vw, 8.6rem);
 }
 
 .hero-line {
@@ -426,65 +408,370 @@ img {
   will-change: transform;
 }
 
-.hero-meta {
-  position: absolute;
-  left: var(--gutter);
-  bottom: clamp(1.6rem, 5vh, 3.6rem);
-  max-width: min(26ch, 62vw);
+.hero-intro {
+  max-width: 54ch;
+  margin: clamp(1.6rem, 3.5vh, 2.6rem) auto 0;
 }
 
-.hero-scroll {
-  position: absolute;
-  right: var(--gutter);
-  bottom: clamp(2rem, 6vh, 4.5rem);
-  color: var(--dimmer);
+.hero-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-top: clamp(1.8rem, 4vh, 3rem);
 }
 
-/* Faint architectural rules that drift with the camera. */
-.rules {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
+.hero-code {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: clamp(3.5rem, 9vh, 6.5rem);
 }
-.rules span {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: var(--line-soft);
+
+/* The hero's code window — Daytona's hero product panel. */
+.hero-panel {
+  width: min(780px, 100%);
+  text-align: left;
+  box-shadow: 0 32px 96px -40px rgba(0, 153, 255, 0.3);
 }
 
 /* ───────────────────────────────────────────────────────────────
-   PROJECT SCENES
+   CODE WINDOW
+   Daytona's core unit: tab row, chrome bar, numbered source. Token
+   colours are sampled from the code theme on daytona.io.
    ─────────────────────────────────────────────────────────────── */
-.project-title {
-  font-size: clamp(2.4rem, 9vw, 8.4rem);
-  width: max-content;
-  max-width: 92vw;
+.code-window {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-md);
+  background: var(--panel-deep);
+  overflow: hidden;
 }
 
-.project-meta {
+.code-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0 1.6rem;
+  gap: 0.25rem;
+  padding: 0.4rem;
+  border-bottom: 1px solid var(--line-soft);
+  background: var(--panel);
+  overflow-x: auto;
+}
+
+.code-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  flex: none;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: none;
+  padding: 0.5em 0.9em;
+  color: var(--dimmer);
+  text-transform: none;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition:
+    color 0.25s,
+    background 0.25s,
+    border-color 0.25s;
+}
+.code-tab img {
+  display: block;
+}
+.code-tab:hover {
   color: var(--dim);
+}
+.code-tab.is-active {
+  color: var(--white);
+  background: var(--panel-deep);
+  border-color: var(--line-soft);
+}
+.code-tab:focus-visible {
+  outline: 1px solid var(--white);
+  outline-offset: 2px;
+}
+
+.code-chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0.7em 1em;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--dimmer);
+}
+.code-dots {
+  display: inline-flex;
+  gap: 6px;
+}
+.code-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2c2c2c;
+}
+.code-file {
+  text-transform: none;
+  letter-spacing: 0.08em;
+}
+
+.code-body {
+  margin: 0;
+  padding: 1em 0 1.1em;
+  overflow-x: auto;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: clamp(0.72rem, 0.85vw, 0.84rem);
+  line-height: 1.7;
+  color: #dedede;
+}
+.code-line {
+  display: flex;
+  transition: background 0.2s;
+}
+.code-line:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+.code-ln {
+  flex: none;
+  width: 2.6em;
+  padding-right: 1.2em;
+  text-align: right;
+  color: #4a4a4a;
+  user-select: none;
+  transition: color 0.2s;
+}
+.code-line:hover .code-ln {
+  color: #8c8c8c;
+}
+.code-src {
+  white-space: pre;
+}
+
+/* ── Typewriter ──
+   `--n` is "characters revealed". The source clips itself to that many `ch`
+   and the caret sits at the same x, so both follow one tweened number
+   (lib/typing.ts). Default 999 — fully visible, no caret — is the no-JS and
+   reduced-motion state; JS sets 0 just before a pass. */
+.typed {
+  --n: 999;
+  --caret-x: 0px;
+  /* One character's advance. Tracked type moves further than 1ch per glyph
+     (the tracking is added after every character, the last included), so
+     tracked lines override this with `1ch + letter-spacing`. */
+  --adv: 1ch;
+  position: relative;
+}
+.typed.t-mono {
+  --adv: calc(1ch + 0.16em);
+}
+/* Code lines: the caret starts after the number gutter (2.6em, border-box).
+   Set here, after `.typed`, so the default above cannot outrank it. */
+.typed.code-line {
+  --caret-x: 2.6em;
+}
+.typed-src {
+  display: inline-block;
+  clip-path: inset(0 max(0px, calc(100% - var(--n) * var(--adv))) 0 0);
+}
+.typed-caret {
+  display: none;
+  position: absolute;
+  top: 0.2em;
+  left: calc(var(--caret-x) + var(--n) * var(--adv));
+  width: 0.6ch;
+  height: 1.25em;
+  background: var(--blue-lift);
+  pointer-events: none;
+}
+
+/* Replays on every tab switch — the body remounts keyed on the filename. */
+.code-anim {
+  animation: code-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes code-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.tok-kw {
+  color: #ff5f87;
+}
+.tok-str {
+  color: #77dddd;
+}
+.tok-com {
+  color: #666666;
+}
+.tok-num {
+  color: #ffcc66;
+}
+.tok-fn {
+  color: #bb88ff;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   MARQUEE
+   Daytona's logo strip, restocked with the stack. Two identical halves
+   make the -50% loop seamless; reduced motion parks it.
+   ─────────────────────────────────────────────────────────────── */
+.marquee-wrap {
+  padding: clamp(2.5rem, 7vh, 4.5rem) 0;
+  border-block: 1px solid var(--line-soft);
+}
+.marquee-label {
+  margin: 0 0 clamp(1.6rem, 4vh, 2.6rem);
+  padding-inline: var(--gutter);
+  text-align: center;
+  color: var(--dimmer);
+}
+.marquee {
+  overflow: hidden;
+}
+/* Holds still under the pointer, so a mark can actually be read. */
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 36s linear infinite;
+}
+.marquee-half {
+  display: flex;
+  flex: none;
+}
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding-right: 2.8rem;
+  white-space: nowrap;
+  color: var(--dim);
+}
+.marquee-item img {
+  display: block;
+}
+
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ───────────────────────────────────────────────────────────────
+   WORK
+   A section-scale headline, then the bento: wide cards span the row,
+   the rest pair up. Each card is media band on top, type below.
+   ─────────────────────────────────────────────────────────────── */
+.work-intro {
+  margin-bottom: clamp(2.5rem, 7vh, 5rem);
+}
+
+.section-title {
+  margin: clamp(1.6rem, 4vh, 2.6rem) 0 0;
+  font-size: clamp(2.6rem, 7vw, 6.4rem);
+}
+
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2.4vw, 2rem);
+}
+
+.project-card {
+  /* The body's layout is decided by the card's own width, not the viewport:
+     a card is wide because it spans the grid, or because the grid has
+     collapsed to one column — either way the same rule should apply. */
+  container-type: inline-size;
+  /* One inset for everything in the card — the code window above and the
+     type below share it, so their left edges sit on the same line. */
+  --card-pad: clamp(1.4rem, 3vw, 2.6rem);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  background: var(--panel);
+  overflow: hidden;
+  transition:
+    border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    translate 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* Lifts on `translate`, which GSAP's entrance (on `transform`) never touches. */
+.project-card:hover {
+  border-color: var(--line);
+  translate: 0 -4px;
+}
+.project-card--wide {
+  grid-column: 1 / -1;
+}
+
+.card-media {
+  display: flex;
+  align-items: center;
+  padding: clamp(1.6rem, 3.4vw, 3rem) var(--card-pad);
+  /* Bands share a floor height, so a one-line-shorter snippet never leaves
+     its window sitting higher than its neighbour's. */
+  min-height: clamp(240px, 26vw, 320px);
+  overflow: hidden;
+  /* A faint dot grid turns the band from an empty void into a canvas the
+     window deliberately sits on. */
+  background-color: var(--panel-deep);
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.055) 1px,
+    transparent 1.5px
+  );
+  background-size: 22px 22px;
+  background-position: center;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+/* The window spans the card's content width exactly: its left edge is the
+   body's left edge, its right edge the year's. */
+.card-code {
+  width: 100%;
+}
+
+.card-body {
+  padding: var(--card-pad);
+}
+
+.project-lede {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.6rem;
+  margin: 0;
+  color: var(--dim);
+}
+.project-year {
+  color: var(--dimmer);
+}
+
+.project-title {
+  margin-top: clamp(1rem, 2.4vh, 1.6rem);
+  font-size: clamp(1.9rem, 3vw, 2.9rem);
+  max-width: 100%;
+}
+.project-card--wide .project-title {
+  font-size: clamp(2.4rem, 5vw, 4.8rem);
 }
 
 .project-statement {
-  max-width: 34ch;
+  max-width: 46ch;
+  margin: clamp(1rem, 2.4vh, 1.6rem) 0 0;
 }
 
 .project-notes {
   display: flex;
-  gap: 1.4rem;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  margin: clamp(1.2rem, 2.6vh, 1.8rem) 0 0;
+  padding: 0;
   color: var(--dimmer);
 }
-
 .project-notes li {
   list-style: none;
 }
-
 .project-notes li::before {
   content: "";
   display: inline-block;
@@ -495,18 +782,29 @@ img {
   margin-right: 0.6rem;
 }
 
-/* Each project reserves a different quadrant so no two read alike. */
-.lay-left {
-  align-items: flex-start;
-  text-align: left;
-}
-.lay-right {
-  align-items: flex-end;
-  text-align: right;
+/* A card wide enough for two columns splits its body row: type left, figure
+   right, so the card is used end to end. Stacked, everything would sit in
+   the first third of the row and the rest reads as a layout that never
+   finished. Under 60rem the figure's column would be too narrow for its
+   labels, so the single column stays and the figure spans the width. */
+@container (min-width: 60rem) {
+  .card-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    column-gap: clamp(2.5rem, 6cqi, 6rem);
+    align-items: start;
+  }
+  .schematic {
+    max-width: 36rem;
+    justify-self: end;
+    /* Top edge on the title's top edge, not the notes' baseline. */
+    margin-top: clamp(1rem, 2.4vh, 1.6rem);
+  }
 }
 
-.stack-tight > * + * {
-  margin-top: clamp(0.9rem, 2vh, 1.6rem);
+/* The route out of the home page's work section and into the register. */
+.work-all {
+  margin-top: clamp(2.4rem, 7vh, 4.5rem);
 }
 
 /* ───────────────────────────────────────────────────────────────
@@ -516,7 +814,6 @@ img {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(3rem, 8vh, 7rem);
-  padding-block: clamp(8rem, 22vh, 16rem);
 }
 
 @media (min-width: 900px) {
@@ -538,76 +835,171 @@ img {
   font-size: clamp(2.1rem, 7.4vw, 6.6rem);
 }
 
-.reveal-line {
-  display: block;
+/* ───────────────────────────────────────────────────────────────
+   PORTRAIT
+   A small square photographic plate — a tight crop on the face inside a
+   hard rectangle, in colour, squared on the head's measured centre.
+   ─────────────────────────────────────────────────────────────── */
+.portrait {
+  width: clamp(104px, 11vw, 156px);
+  aspect-ratio: 1;
+  margin-bottom: clamp(1.2rem, 3vh, 2rem);
   overflow: hidden;
+  border-radius: var(--r-md);
 }
-.reveal-line > span {
-  display: block;
-  will-change: transform;
+.portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 899px) {
+  .portrait {
+    width: clamp(96px, 28vw, 132px);
+  }
 }
 
 /* ───────────────────────────────────────────────────────────────
    CAPABILITIES
+   Daytona's "Programmatic Control" shape: tab list left, framed panel
+   right. Narrow screens collapse the list into a row of pills.
    ─────────────────────────────────────────────────────────────── */
-.cap {
-  padding-block: clamp(4rem, 11vh, 8rem) clamp(6rem, 16vh, 12rem);
-}
-
 .cap-heading {
-  font-size: clamp(1.6rem, 4.4vw, 4rem);
-  color: var(--dim);
+  margin: clamp(1.6rem, 4vh, 2.6rem) 0 clamp(2.2rem, 6vh, 4rem);
+  font-size: clamp(2.2rem, 5.5vw, 4.8rem);
 }
 
-.cap-field {
-  margin-top: clamp(2.4rem, 7vh, 5rem);
+.cap-layout {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(2rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem);
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
 }
 
-@media (min-width: 900px) {
-  .cap-field {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
+.cap-tabs {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line-soft);
 }
 
-.cap-term {
+.cap-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+  width: 100%;
+  padding: 1.15em 0.25em;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  background: none;
+  color: var(--dimmer);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cap-tab::before {
+  content: "";
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--dimmer);
+  transition:
+    background 0.3s,
+    border-color 0.3s;
+}
+.cap-tab:hover {
   color: var(--dim);
+}
+.cap-tab.is-active {
+  color: var(--white);
+}
+.cap-tab.is-active::before {
+  background: var(--blue);
+  border-color: var(--blue);
+}
+.cap-tab:focus-visible {
+  outline: 1px solid var(--white);
+  outline-offset: 4px;
+}
+.cap-tab-count {
+  margin-left: auto;
+  color: var(--dimmer);
+}
+
+.cap-panel {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg);
+  background: var(--panel);
+  padding: clamp(1.4rem, 3vw, 2.4rem);
+  min-height: clamp(240px, 32vh, 320px);
+}
+
+.cap-panel-head {
+  margin: 0 0 clamp(1.4rem, 3vh, 2.2rem);
+  padding-bottom: 1.1em;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--dimmer);
+  text-transform: lowercase;
+}
+
+.cap-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+}
+.cap-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-md);
+  background: var(--panel-deep);
+  padding: 0.8em 1.1em;
+  color: var(--dim);
+  font-size: clamp(0.72rem, 0.9vw, 0.85rem);
+  transition:
+    border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    translate 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cap-chip:hover {
+  border-color: var(--line);
+  color: var(--white);
+  translate: 0 -2px;
+}
+.cap-chip img {
   display: block;
 }
-.cap-col > * + * {
-  margin-top: clamp(0.9rem, 2.6vh, 1.9rem);
-}
-/* Nudge individual terms off their column edge so the field never
-   resolves into a table. */
-.cap-col:nth-child(odd) .cap-term:nth-child(2) {
-  transform: translateX(clamp(0.5rem, 2vw, 2.2rem));
-}
-.cap-col:nth-child(even) .cap-term:nth-child(3) {
-  transform: translateX(clamp(0.4rem, 1.5vw, 1.6rem));
-}
-.cap-col:nth-child(even) .cap-term:nth-child(1) {
-  transform: translateX(clamp(0.3rem, 1.1vw, 1.1rem));
-}
-/* Nudge each column off a shared baseline so it reads as a field, not a table. */
-.cap-col:nth-child(2) {
-  transform: translateY(clamp(1rem, 4vh, 3.4rem));
-}
-.cap-col:nth-child(3) {
-  transform: translateY(clamp(0.4rem, 1.6vh, 1.4rem));
-}
-.cap-col:nth-child(4) {
-  transform: translateY(clamp(1.6rem, 6vh, 5rem));
+
+@media (max-width: 899px) {
+  .cap-layout {
+    grid-template-columns: 1fr;
+  }
+  .cap-tabs {
+    flex-direction: row;
+    gap: 0.6rem;
+    overflow-x: auto;
+    border-top: 0;
+    padding-bottom: 0.4rem;
+  }
+  .cap-tab {
+    width: auto;
+    flex: none;
+    padding: 0.6em 1.1em;
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .cap-tab.is-active {
+    border-color: var(--blue);
+  }
+  .cap-tab-count {
+    display: none;
+  }
 }
 
 /* ───────────────────────────────────────────────────────────────
    CONTACT
    ─────────────────────────────────────────────────────────────── */
-.contact {
-  padding-block: clamp(6rem, 16vh, 12rem) clamp(3rem, 8vh, 6rem);
-}
-
 .contact-type {
   font-size: clamp(3rem, 15vw, 14rem);
 }
@@ -623,255 +1015,183 @@ img {
 }
 
 .contact-mail {
+  position: relative;
   font-size: clamp(0.95rem, 1.6vw, 1.4rem);
   letter-spacing: 0.02em;
   font-family: var(--font-mono), monospace;
   font-weight: 300;
 }
+/* The nav links' drawn underline, at display size. */
+.contact-mail::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.18em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.contact-mail:hover::after {
+  transform: scaleX(1);
+}
 
-.colophon {
+.contact-social {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.55em 1.1em;
+  transition:
+    background 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    scale 0.2s ease;
+}
+.pill:hover {
+  background: var(--white);
+  color: var(--black);
+  border-color: var(--white);
+}
+
+/* Footer: the sitemap / contact grid the page closes with. */
+.footer-grid {
+  margin-top: clamp(3rem, 9vh, 6rem);
+  border-top: 1px solid var(--line-soft);
+  padding-top: clamp(1.6rem, 4vh, 2.6rem);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 6vw, 6rem);
+}
+.footer-col > * + * {
+  margin-top: 0.75em;
+}
+.footer-title {
+  margin: 0 0 0.4em;
+  color: var(--dimmer);
+}
+.footer-col p {
+  margin-bottom: 0;
+}
+.footer-col a {
+  display: block;
+  width: max-content;
+  color: var(--dim);
+  transition: color 0.3s;
+}
+.footer-col a:hover {
+  color: var(--white);
+}
+.footer-base {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
   color: var(--dimmer);
-  margin-top: clamp(4rem, 12vh, 9rem);
-}
-
-/* ───────────────────────────────────────────────────────────────
-   REDUCED MOTION
-   Everything settles into a finished, static composition.
-   ─────────────────────────────────────────────────────────────── */
-@media (prefers-reduced-motion: reduce) {
-  .scene--tall,
-  .hero {
-    min-height: 100vh;
-  }
-  .scene-sticky {
-    position: relative;
-    padding-block: clamp(5rem, 14vh, 10rem);
-  }
-  .layer-pointer {
-    transform: none;
-    will-change: auto;
-  }
-  .layer-motion {
-    will-change: auto;
-  }
-  .nav-links a::after {
-    transition: none;
-  }
-}
-
-/* ───────────────────────────────────────────────────────────────
-   HERO TYPE PLANES
-   `position: sticky` always opens a stacking context, which would trap
-   every hero line on one z-plane. Two fixed planes instead — one in front
-   of the stage, one behind it — let the architectural object sit inside
-   the wordmark rather than beside it.
-   ─────────────────────────────────────────────────────────────── */
-.type-plane {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-inline: var(--gutter);
-  pointer-events: none;
-}
-.type-plane--back {
-  z-index: 1;
-}
-.type-plane--front {
-  z-index: 3;
-}
-.type-plane .hero-type {
-  width: 100%;
-}
-/* SYSTEMS. is typeset twice: the readable copy lives in the <h1> on the
-   front plane at zero opacity to hold the line box, the visible copy is an
-   aria-hidden duplicate behind the object. */
-.hl-ghost {
-  opacity: 0;
-}
-
-.hero-line--indent {
-  padding-left: clamp(0.1rem, 1.4vw, 2.2rem);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .type-plane {
-    position: absolute;
-  }
-}
-
-/* ───────────────────────────────────────────────────────────────
-   PROJECT BLOCK PLACEMENT
-   Each project claims a different part of the frame; none of them are
-   cards and none of them repeat the same corner.
-   ─────────────────────────────────────────────────────────────── */
-.project-block {
-  max-width: min(30rem, 42vw);
-  position: relative;
-}
-
-.project--caroot .scene-sticky {
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: clamp(2rem, 10vh, 7rem);
-}
-.project--protein .scene-sticky {
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: clamp(3rem, 12vh, 8rem);
-}
-.project--commerce .scene-sticky {
-  justify-content: center;
-  align-items: flex-start;
-  /* Held just above centre with padding rather than a transform — GSAP owns
-     the block's transform. */
-  padding-bottom: clamp(2rem, 8vh, 5rem);
-}
-.project--workflow .scene-sticky {
-  justify-content: center;
-  align-items: flex-start;
-}
-
-/* Protein and Workflow deliberately run their type across the visual. */
-.project--protein .project-block,
-.project--workflow .project-block {
-  max-width: min(34rem, 48vw);
-}
-
-.project-lede {
-  display: flex;
-  gap: clamp(1rem, 3vw, 3rem);
-  flex-wrap: wrap;
-  align-items: baseline;
+  border-top: 1px solid var(--line-soft);
+  margin-top: clamp(2.4rem, 7vh, 4.5rem);
+  padding-top: 1rem;
 }
 
 @media (max-width: 899px) {
-  .project-block,
-  .project--protein .project-block,
-  .project--workflow .project-block {
-    max-width: 100%;
+  .footer-grid {
+    grid-template-columns: 1fr;
   }
-  .project-title {
-    max-width: 100%;
-    width: auto;
-    font-size: clamp(2.4rem, 12vw, 5rem);
-  }
-
-  /* The wordmark keeps the frame; the meta block follows it in flow
-     instead of being pinned to a corner it would otherwise fight. */
-  .hero-type {
-    font-size: clamp(3rem, 17.5vw, 8rem);
-    transform: none;
-  }
-  .hero-meta {
-    position: static;
-    margin-top: clamp(2.6rem, 8vh, 4rem);
-    max-width: 100%;
-  }
-  /* The role line wraps into the links at this width. */
-  .nav-role {
-    display: none;
-  }
-  .cap-col:nth-child(n) .cap-term {
-    transform: none;
-  }
-  .project--protein .scene-sticky,
-  .project--commerce .scene-sticky {
-    justify-content: center;
-    padding-block: 0;
-  }
-  .project-notes {
-    flex-direction: column;
-    gap: 0.35rem;
-  }
-}
-
-/* A single hairline that measures the scene rather than boxing it in. */
-.tick {
-  display: block;
-  width: clamp(2.4rem, 8vw, 6rem);
-  height: 1px;
-  background: var(--line);
-}
-
-/* Line masks — reveals slide out of a clipped box instead of fading. */
-.line-mask {
-  display: block;
-  overflow: hidden;
-  padding-bottom: 0.08em;
-}
-
-/* Containing block for the hero planes once they drop out of `fixed`. */
-.hero-root {
-  position: relative;
 }
 
 /* ───────────────────────────────────────────────────────────────
    SCHEMATIC
-   The diagram that says what each project is. Drawn by scroll, so the
-   page visibly advances instead of only drifting.
+   The figure that says what each project is: stages on a rail, drawn as
+   the card arrives, then kept running by packets riding the rails.
    ─────────────────────────────────────────────────────────────── */
+/* The figure is a plate: it spans the card's content width, the same edges
+   as the code window and the year, and the drawing sits centred inside it
+   at a size that keeps its labels in scale with the page. */
 .schematic {
   margin: clamp(1.4rem, 3vh, 2.4rem) 0 0;
-  width: min(30rem, 100%);
+  width: 100%;
+}
+
+.schematic-panel {
+  padding: clamp(0.9rem, 2.4vw, 1.3rem);
+  /* Same dot-grid canvas as the card's media band. */
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.045) 1px,
+    transparent 1.5px
+  );
+  background-size: 18px 18px;
+  background-position: center;
+}
+
+.schematic-head {
+  margin: 0 0 clamp(0.5rem, 1.4vh, 0.9rem);
+  color: var(--dimmer);
+  letter-spacing: 0.2em;
 }
 
 .schematic svg {
+  display: block;
   width: 100%;
+  max-width: 36rem;
+  margin-inline: auto;
   height: auto;
   overflow: visible;
 }
 
-.sch-line {
+/* Rails: hairlines between stages, drawn on as the figure arrives. */
+.sch-rail {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.7);
+  stroke: rgba(255, 255, 255, 0.42);
   stroke-width: 1;
+  stroke-linecap: round;
   vector-effect: non-scaling-stroke;
 }
-/* The exception path. Its dash pattern is the meaning, so it cannot also
-   carry the draw-on animation — it fades in instead. */
-.sch-dash {
-  stroke: var(--dimmer);
-  stroke-dasharray: 3 4;
-  opacity: 0;
-}
-.sch-dot {
-  fill: var(--dim);
-  stroke: none;
-}
-/* pathLength is 1, so a dasharray of 1 is exactly one full stroke */
-.sch-draw {
+/* pathLength is 1, so a dasharray of 1 is exactly one full stroke. */
+.sch-rail--draw {
   stroke-dasharray: 1;
 }
+/* The retry path. Its dashes are the meaning, and they march. */
+.sch-rail--dashed {
+  stroke: var(--dimmer);
+  stroke-dasharray: 3 4;
+}
 
-.sch-node rect,
-.sch-node circle,
-.sch-node line {
-  fill: none;
-  stroke: var(--white);
+/* Stages: a rounded tile carrying a line icon. The fill matches the panel
+   so the dot grid stops under the tile. */
+.sch-tile {
+  fill: var(--panel);
+  stroke: rgba(255, 255, 255, 0.55);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
 }
-.sch-node .sch-fill {
-  fill: var(--white);
-  stroke: none;
+.sch-icon svg {
+  color: rgba(255, 255, 255, 0.85);
 }
-.sch-accent rect,
-.sch-accent circle,
-.sch-accent line {
-  stroke: var(--blue-lift);
-}
-.sch-accent .sch-fill {
-  fill: var(--blue-lift);
+.sch-source svg {
+  color: rgba(255, 255, 255, 0.5);
 }
 
-.sch-marker {
+/* A ring breathing off a tile while it works. */
+.sch-ring {
+  fill: none;
+  stroke: var(--blue-lift);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Packets: the unit of work riding the rails. The retry runs dimmer. */
+.sch-packet {
   fill: var(--blue-lift);
-  stroke: none;
+}
+.sch-packet--back {
+  fill: rgba(255, 255, 255, 0.7);
 }
 
 .sch-label {
@@ -879,6 +1199,7 @@ img {
   font-size: 8.5px;
   letter-spacing: 0.12em;
   fill: rgba(255, 255, 255, 0.78);
+  text-anchor: middle;
 }
 
 .schematic-caption {
@@ -887,6 +1208,377 @@ img {
   text-transform: none;
   letter-spacing: 0.04em;
   max-width: 42ch;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   WORKS
+   The register of shipped work and its case studies. Rows in a ledger,
+   each carrying a capture of the live site in a window; the case study
+   opens with a spec sheet and the site at two sizes.
+   ─────────────────────────────────────────────────────────────── */
+/* A page's first scene clears the fixed navigation. */
+.page-intro {
+  padding-top: clamp(8rem, 20vh, 12rem);
+  padding-bottom: clamp(3rem, 8vh, 5rem);
+}
+.page-title {
+  margin: clamp(1.6rem, 4vh, 2.6rem) 0 0;
+  font-size: clamp(2.8rem, 8vw, 7.4rem);
+}
+.page-lede {
+  max-width: 54ch;
+  margin: clamp(1.6rem, 3.5vh, 2.6rem) 0 0;
+}
+.section-head-link {
+  color: var(--dim);
+  transition: color 0.3s;
+}
+.section-head-link:hover {
+  color: var(--white);
+}
+
+/* The ledger. */
+.ledger-scene {
+  padding-top: 0;
+}
+.ledger {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--line-soft);
+}
+.ledger-row {
+  border-bottom: 1px solid var(--line-soft);
+}
+.ledger-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.4rem, 3vw, 2.4rem);
+  padding: clamp(1.8rem, 4vh, 3rem) 0;
+}
+@media (min-width: 900px) {
+  .ledger-link {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+    column-gap: clamp(2rem, 6vw, 6rem);
+    align-items: center;
+  }
+}
+.ledger-kicker {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  color: var(--dimmer);
+}
+.ledger-name {
+  margin-top: clamp(0.9rem, 2vh, 1.4rem);
+  font-size: clamp(2.2rem, 4.6vw, 4.4rem);
+}
+.ledger-tags {
+  margin: clamp(0.8rem, 1.8vh, 1.2rem) 0 0;
+  color: var(--dimmer);
+}
+.ledger-statement {
+  max-width: 44ch;
+  margin: clamp(0.9rem, 2vh, 1.4rem) 0 0;
+}
+.ledger-cta {
+  display: inline-flex;
+  gap: 0.6em;
+  margin-top: clamp(1.2rem, 2.6vh, 1.8rem);
+  color: var(--white);
+}
+.ledger-cta span {
+  display: inline-block;
+  transition: translate 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ledger-link:hover .ledger-cta span {
+  translate: 4px 0;
+}
+.ledger-link:hover .plate {
+  border-color: var(--line);
+}
+.ledger-link:hover .plate-img {
+  scale: 1.02;
+}
+
+/* The plate: a browser window on the dot grid — the code window's sibling. */
+.plate {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--r-md);
+  background-color: var(--panel-deep);
+  background-image: radial-gradient(
+    rgba(255, 255, 255, 0.055) 1px,
+    transparent 1.5px
+  );
+  background-size: 18px 18px;
+  background-position: center;
+  padding: clamp(0.7rem, 1.8vw, 1.2rem);
+  transition: border-color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.plate-chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+  padding: 0 0.2em 0.8em;
+  color: var(--dimmer);
+}
+.plate-url {
+  text-transform: none;
+  letter-spacing: 0.08em;
+}
+.plate-screen {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  background: #0f0f0f;
+}
+.plate--mobile {
+  max-width: 300px;
+}
+.plate--mobile .plate-screen {
+  aspect-ratio: 390 / 844;
+  border-radius: 18px;
+}
+.plate-img {
+  object-fit: cover;
+  object-position: top;
+  transition: scale 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.plate-blank {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  color: var(--dimmer);
+}
+.plate-mark {
+  font-size: clamp(1.8rem, 4vw, 3.4rem);
+  color: var(--white);
+}
+
+/* The case study. */
+.work-kicker {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  color: var(--dimmer);
+  white-space: pre-wrap;
+}
+.work-kicker a {
+  color: var(--dim);
+  transition: color 0.3s;
+}
+.work-kicker a:hover {
+  color: var(--white);
+}
+.work-title {
+  margin-top: clamp(1.4rem, 3.5vh, 2.4rem);
+  font-size: clamp(2.8rem, 8vw, 7.4rem);
+}
+.work-statement {
+  max-width: 52ch;
+  margin: clamp(1.4rem, 3vh, 2.2rem) 0 0;
+}
+
+/* The spec sheet: six facts in a hairline grid. */
+.spec {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(1.5rem, 4vw, 4rem);
+  margin: clamp(2.4rem, 6vh, 4rem) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--line-soft);
+}
+@media (min-width: 900px) {
+  .spec {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.spec > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.spec dt {
+  margin: 0;
+  color: var(--dimmer);
+}
+.spec dd {
+  margin: 0;
+  color: var(--white);
+  text-transform: none;
+  letter-spacing: 0.06em;
+}
+.spec-link {
+  display: inline-flex;
+  gap: 0.5em;
+  color: var(--white);
+  border-bottom: 1px solid var(--line);
+  transition: border-color 0.3s;
+}
+.spec-link:hover {
+  border-color: var(--white);
+}
+
+.work-plates {
+  padding-top: 0;
+}
+.work-plates-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1rem, 2.4vw, 2rem);
+}
+@media (min-width: 900px) {
+  .work-plates-grid {
+    grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.work-body {
+  padding-top: 0;
+}
+.work-section + .work-section {
+  margin-top: clamp(3rem, 8vh, 5.5rem);
+}
+.work-body .section-head {
+  margin-bottom: clamp(1.4rem, 4vh, 2.4rem);
+}
+/* From 900px each section is the About layout: the kicker holds the left
+   column and stays put while the copy scrolls; the copy takes the other two
+   thirds. The rule moves to the section so it still spans the row. */
+@media (min-width: 900px) {
+  .work-section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    column-gap: clamp(2rem, 6vw, 6rem);
+    align-items: start;
+    border-top: 1px solid var(--line-soft);
+    padding-top: clamp(0.8rem, 2vh, 1.2rem);
+  }
+  .work-section .section-head {
+    position: sticky;
+    top: clamp(6rem, 15vh, 9rem);
+    margin-bottom: 0;
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+.brief {
+  max-width: 68ch;
+}
+.brief p {
+  margin: 0;
+}
+.brief p + p {
+  margin-top: 1.2em;
+}
+/* The opening paragraph is the lede: a size up, in white. */
+.brief p:first-child {
+  font-size: clamp(1rem, 1.4vw, 1.35rem);
+  line-height: 1.6;
+  color: var(--white);
+}
+.built {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 80ch;
+  border-top: 1px solid var(--line-soft);
+}
+.built li {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.built-n {
+  color: var(--dimmer);
+}
+
+.work-next {
+  padding-top: 0;
+}
+.next-link {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  padding: clamp(1.4rem, 3.5vh, 2.4rem) 0;
+  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+}
+.next-label {
+  flex: none;
+  color: var(--dimmer);
+}
+.next-name {
+  flex: 1;
+  font-size: clamp(1.8rem, 4vw, 3.6rem);
+}
+.next-arrow {
+  display: inline-block;
+  color: var(--white);
+  transition: translate 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.next-link:hover .next-arrow {
+  translate: 6px 0;
+}
+.all-link {
+  display: inline-block;
+  margin-top: 1.4rem;
+  color: var(--dim);
+  transition: color 0.3s;
+}
+.all-link:hover {
+  color: var(--white);
+}
+
+.site-foot {
+  padding-top: 0;
+}
+
+/* ───────────────────────────────────────────────────────────────
+   NOT FOUND
+   The 404 keeps the document furniture — ruled header, two-line headline,
+   footer — and puts the lookup that failed beside it in a code window, so
+   a dead end still reads as part of the system.
+   ─────────────────────────────────────────────────────────────── */
+.nf-scene {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 82svh;
+}
+.nf-grid {
+  display: grid;
+  gap: clamp(2.75rem, 6vw, 4.5rem);
+  align-items: center;
+}
+/* Half a column at desktop, so the headline cannot outgrow its own lane. */
+.nf-title {
+  font-size: clamp(2.6rem, 5.6vw, 5rem);
+}
+.nf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: clamp(2rem, 4.5vh, 3rem);
+}
+
+@media (min-width: 900px) {
+  .nf-grid {
+    grid-template-columns: 1.05fr 0.95fr;
+  }
 }
 
 /* ───────────────────────────────────────────────────────────────
@@ -1010,7 +1702,8 @@ img {
 }
 
 @media (max-width: 899px) {
-  .nav-links {
+  .nav-links,
+  .nav-cta {
     display: none;
   }
   .burger {
@@ -1023,24 +1716,13 @@ img {
   .progress {
     padding-bottom: 0.45rem;
   }
-  .schematic {
-    width: 100%;
+  /* One column: every card spans the row. */
+  .work-grid {
+    grid-template-columns: 1fr;
   }
-  /* Four labels across 390px: the tracking has to come off or the last two
-     run into each other. */
-  .sch-label {
-    font-size: 9.5px;
-    letter-spacing: 0.06em;
-  }
-  /* One column: the copy takes the lower band the scrim has darkened. */
-  .project--caroot .scene-sticky,
-  .project--protein .scene-sticky,
-  .project--commerce .scene-sticky,
-  .project--workflow .scene-sticky {
-    justify-content: flex-end;
-    align-items: flex-start;
-    padding-top: 0;
-    padding-bottom: clamp(3.5rem, 11vh, 6rem);
+  /* The role line wraps into the links at this width. */
+  .nav-role {
+    display: none;
   }
 }
 
@@ -1050,28 +1732,29 @@ img {
   }
 }
 
-/* ───────────────────────────────────────────────────────────────
-   PORTRAIT
-   A small square photographic plate — a tight crop on the face inside a
-   hard rectangle, in colour, squared on the head's measured centre.
-   Explicitly NOT a desaturated cut-out bust floating on black: a
-   monochrome suit-and-tie silhouette framed that way reads as a memorial
-   portrait, which is not what this page is.
-   ─────────────────────────────────────────────────────────────── */
-.portrait {
-  width: clamp(104px, 11vw, 156px);
-  aspect-ratio: 1;
-  margin-bottom: clamp(1.2rem, 3vh, 2rem);
-  overflow: hidden;
-}
-.portrait img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Phones: the drawing is ~320px across, so its labels are set larger and
+   the tracking comes off, or the last two run into each other. */
+@media (max-width: 599px) {
+  .sch-label {
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+  }
 }
 
-@media (max-width: 899px) {
-  .portrait {
-    width: clamp(96px, 28vw, 132px);
+/* ───────────────────────────────────────────────────────────────
+   REDUCED MOTION
+   Everything settles into a finished, static composition. JS reveals are
+   gated on `prefers-reduced-motion: no-preference`; what CSS owns, CSS
+   stills.
+   ─────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  .code-anim {
+    animation: none;
+  }
+  .nav-links a::after {
+    transition: none;
   }
 }

@@ -4,7 +4,8 @@ import { useRef } from "react";
 import { about } from "@/lib/content";
 import { gsap, MQ, EASE, DUR } from "@/lib/motion";
 import { useIsoLayoutEffect } from "@/lib/useIsoLayoutEffect";
-import Visual from "@/components/stage/Visual";
+import SectionHead from "@/components/SectionHead";
+import Visual from "@/components/Visual";
 
 /**
  * Not a profile block: a small identity stamp on the left and a statement
@@ -50,6 +51,7 @@ export default function AboutScene() {
 
   return (
     <section id="about" className="scene" ref={root}>
+      <SectionHead index="02" label="ABOUT" />
       <div className="about-grid">
         <div className="about-id stack-tight">
           <div className="portrait">

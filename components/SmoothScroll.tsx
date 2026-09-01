@@ -35,12 +35,19 @@ export default function SmoothScroll() {
     gsap.ticker.lagSmoothing(0);
 
     // Anchor links have to go through Lenis or they fight the smoothing.
+    // "/#about" counts too when this is the home page — the navigation
+    // writes its links that way so they resolve from every route.
     const onClick = (e: MouseEvent) => {
       const anchor = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>(
-        'a[href^="#"]',
+        'a[href^="#"], a[href^="/#"]',
       );
       if (!anchor) return;
-      const id = anchor.getAttribute("href");
+      const href = anchor.getAttribute("href") ?? "";
+      const id = href.startsWith("/#")
+        ? window.location.pathname === "/"
+          ? href.slice(1)
+          : null
+        : href;
       if (!id || id === "#") return;
       const target = document.querySelector(id);
       if (!target) return;

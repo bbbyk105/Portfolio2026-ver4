@@ -4,128 +4,108 @@ import { useRef } from "react";
 import type { Project } from "@/lib/content";
 import { gsap, MQ, EASE, DUR } from "@/lib/motion";
 import { useIsoLayoutEffect } from "@/lib/useIsoLayoutEffect";
+import CodeWindow from "@/components/CodeWindow";
 import Schematic from "@/components/Schematic";
 
 /**
- * One project. The imagery for it lives on the fixed stage — this component
- * owns only the typography and the rate at which it travels, which is what
- * separates foreground from background as the camera moves.
+ * One project, one card — Daytona's bento unit. The card's media band is a
+ * code window running the project's snippet, not a render; the old
+ * composition (type pinned left, imagery floating right on a fixed stage)
+ * is gone. Wide projects span the whole grid, the rest pair up two to a row.
  *
- * Workflow is the exception: its diagram is alone in the frame first and the
- * type climbs into it, so its title is scroll-driven rather than revealed.
+ * Motion: the card rises into place as it enters, the title keeps its masked
+ * line reveal, the copy under it follows a beat later, the code window types
+ * its source, and the schematic draws itself as the card is scrolled through.
+ * The window itself never drifts: a floating window in an empty band reads
+ * as a bug, not as motion.
  */
-export default function ProjectScene({ project }: { project: Project }) {
+export default function ProjectScene({
+  project,
+  index,
+}: {
+  project: Project;
+  index: number;
+}) {
   const root = useRef<HTMLElement>(null);
-  const id = project.id;
 
   useIsoLayoutEffect(() => {
     const el = root.current;
     if (!el) return;
 
     const mm = gsap.matchMedia();
-    mm.add({ desktop: MQ.desktop, mobile: MQ.mobile }, (ctx) => {
-      const { desktop } = ctx.conditions as Record<string, boolean>;
-      const k = desktop ? 1 : 0.55;
+    mm.add(MQ.motion, () => {
       const q = gsap.utils.selector(el);
-      const vh = (n: number) => () => window.innerHeight * n;
 
-      /* Scrolling in has to visibly move something. The block rises into
-         place under scrub, holds while the scene owns the viewport, then
-         fades as it leaves so it never slides under the navigation.
-         Position only on the way in — fading body copy across a whole scene
-         leaves it washed out for most of the time it is being read. */
-      gsap.fromTo(
-        q(".project-block"),
-        { y: vh(0.12 * k) },
-        {
-          y: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 86%",
-            end: "top 42%",
-            scrub: 0.6,
-            invalidateOnRefresh: true,
-          },
-        },
-      );
-
-      gsap.to(q(".project-block"), {
+      gsap.from(el, {
+        y: 64,
         opacity: 0,
-        y: vh(-0.06 * k),
-        ease: "none",
-        scrollTrigger: {
-          // Starts exactly when the sticky releases, so the block is gone
-          // before it can travel up under the navigation.
-          trigger: el,
-          start: "bottom bottom",
-          end: "bottom 68%",
-          scrub: 0.6,
-          invalidateOnRefresh: true,
-        },
+        duration: DUR.reveal,
+        ease: EASE.enter,
+        scrollTrigger: { trigger: el, start: "top 86%" },
       });
 
-      // Workflow's diagram is alone in the frame first; its type climbs in
-      // afterwards, so it gets a longer approach than the others.
-      if (id === "workflow") {
-        gsap.fromTo(
-          q(".project-title"),
-          { y: vh(0.16 * k) },
-          {
-            y: 0,
-            ease: "none",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 70%",
-              end: "top 20%",
-              scrub: 0.6,
-              invalidateOnRefresh: true,
-            },
-          },
-        );
-      } else {
-        gsap.from(q(".project-title .line-mask > span"), {
-          yPercent: 106,
-          duration: DUR.reveal,
-          ease: EASE.enter,
-          stagger: 0.07,
-          scrollTrigger: { trigger: el, start: "top 72%" },
-        });
-      }
+      gsap.from(q(".project-title .line-mask > span"), {
+        yPercent: 106,
+        duration: DUR.reveal,
+        ease: EASE.enter,
+        stagger: 0.07,
+        scrollTrigger: { trigger: el, start: "top 74%" },
+      });
+
+      // The lede, statement and notes follow the title in, a beat apart.
+      gsap.from(q(".project-lede, .project-statement, .project-notes li"), {
+        opacity: 0,
+        y: 12,
+        duration: DUR.swap,
+        ease: EASE.glide,
+        stagger: 0.07,
+        scrollTrigger: { trigger: el, start: "top 72%" },
+      });
     }, el);
 
     return () => mm.revert();
-  }, [id]);
+  }, []);
 
   return (
     <section
-      id={`p-${id}`}
-      className={`scene scene--tall project project--${id}`}
+      id={`p-${project.id}`}
+      className={`project-card${project.wide ? " project-card--wide" : ""}`}
       ref={root}
-      aria-labelledby={`h-${id}`}
+      aria-labelledby={`h-${project.id}`}
     >
-      <div className="scene-sticky">
-        <div className="project-block stack-tight">
-          <div className="project-lede">
-            <p className="project-meta t-mono">{project.meta.join("  /  ")}</p>
-            <p className="t-mono" style={{ color: "var(--dimmer)" }}>
-              {project.year}
-            </p>
+      <div className="card-media">
+        <CodeWindow tabs={[project.code]} className="card-code" />
+      </div>
+
+      <div className="card-body">
+        <div className="project-lede t-mono">
+          <span>{`P.0${index + 1} — ${project.meta.join("  /  ")}`}</span>
+          <span className="project-year">{project.year}</span>
+        </div>
+
+        {/* Wide cards split this row: type on the left, figure on the right.
+            Stacked in one column, the body fills a third of the card and the
+            rest of the row sits empty. Narrow cards keep the single column. */}
+        <div className="card-cols">
+          <div className="card-text">
+            <h2 className="t-display project-title" id={`h-${project.id}`}>
+              {project.title.map((line) => (
+                <span className="line-mask" key={line}>
+                  <span>{line}</span>
+                </span>
+              ))}
+            </h2>
+
+            <p className="project-statement t-body">{project.statement}</p>
+
+            <ul className="project-notes t-mono">
+              {project.notes.map((note) => (
+                <li key={note}>{note}</li>
+              ))}
+            </ul>
           </div>
 
-          <h2 className="t-display project-title" id={`h-${id}`}>
-            {project.title.map((line) => (
-              <span className="line-mask" key={line}>
-                <span>{line}</span>
-              </span>
-            ))}
-          </h2>
-
-          <p className="project-statement t-body">
-            {project.statement}
-          </p>
-
-          <Schematic id={project.id} />
+          <Schematic id={project.id} index={index} />
         </div>
       </div>
     </section>
