@@ -1,0 +1,38 @@
+.language-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: .42rem;
+  color: var(--dimmer);
+  white-space: nowrap;
+}
+.language-toggle button {
+  appearance: none;
+  border: 0;
+  padding: .25rem 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  opacity: .48;
+  transition: opacity .25s ease, color .25s ease;
+}
+.language-toggle button:hover { opacity: .82; }
+.language-toggle button.is-active { color: var(--white); opacity: 1; }
+.language-toggle span { opacity: .28; }
+
+html[data-lang="ja"] .t-body {
+  font-family: var(--font-display), "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-weight: 400;
+  letter-spacing: .025em;
+  line-height: 1.95;
+}
+
+@media (max-width: 899px) {
+  .nav-right > .language-toggle { display: none; }
+  .menu-foot .language-toggle { display: inline-flex; }
+}
+
+@media (min-width: 900px) {
+  .menu-foot .language-toggle { display: none; }
+}
