@@ -27,9 +27,7 @@ export default function GlobalNav() {
         .to(".burger-top", { y: 4, rotate: 45, duration: reduced ? 0.001 : 0.4, ease: EASE.swap }, 0)
         .to(".burger-bottom", { y: -4, rotate: -45, duration: reduced ? 0.001 : 0.4, ease: EASE.swap }, 0);
       tl.current = t;
-      if (!reduced) {
-        gsap.from([".nav-mark", ".nav-links", ".language-toggle", ".nav-cta", ".burger"], { opacity: 0, y: -6, duration: DUR.swap, ease: EASE.glide, stagger: 0.05, delay: 0.4 });
-      }
+      if (!reduced) gsap.from([".nav-mark", ".nav-links", ".language-toggle", ".nav-cta", ".burger"], { opacity: 0, y: -6, duration: DUR.swap, ease: EASE.glide, stagger: 0.05, delay: 0.4 });
     }, el);
     gsap.set(q(".menu"), { pointerEvents: "none" });
     return () => {
@@ -58,34 +56,26 @@ export default function GlobalNav() {
     <div ref={root}>
       <header className="nav">
         <div className="nav-mark t-mono">
-          <NavAnchor href="/#hero" className="nav-home" aria-label="Byakko Kondo — home">
-            <span className="nav-glyph" aria-hidden="true" />BYAKKO KONDO
-          </NavAnchor>
+          <NavAnchor href="/#hero" className="nav-home" aria-label="Byakko Kondo — home"><span className="nav-glyph" aria-hidden="true" />BYAKKO KONDO</NavAnchor>
           <span className="nav-role block" style={{ color: "var(--dim)" }}>ENGINEER / CREATIVE DEVELOPER</span>
         </div>
         <div className="nav-right">
-          <nav className="nav-links t-mono" aria-label="Primary">
-            {nav.map((item) => <NavAnchor key={item.href} href={item.href}>{item.label}</NavAnchor>)}
-          </nav>
+          <nav className="nav-links t-mono" aria-label="Primary">{nav.map((item) => <NavAnchor key={item.href} href={item.href}>{item.label}</NavAnchor>)}</nav>
           <LanguageToggle />
           <NavAnchor className="nav-cta t-mono" href="/#contact">GET IN TOUCH</NavAnchor>
         </div>
-        <button type="button" className="burger" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="site-menu" onClick={() => toggle(!open)}>
-          <span className="burger-top" /><span className="burger-bottom" />
-        </button>
+        <button type="button" className="burger" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="site-menu" onClick={() => toggle(!open)}><span className="burger-top" /><span className="burger-bottom" /></button>
       </header>
 
       <div id="site-menu" className="menu" hidden={false} aria-hidden={!open}>
         <nav className="menu-list" aria-label="Menu">
           <NavAnchor href="/#hero" className="menu-line" tabIndex={open ? 0 : -1} onClick={() => toggle(false)}><span className="menu-item t-display">HOME</span></NavAnchor>
-          {nav.map((item) => (
-            <NavAnchor key={item.href} href={item.href} className="menu-line" tabIndex={open ? 0 : -1} onClick={() => toggle(false)}><span className="menu-item t-display">{item.label}</span></NavAnchor>
-          ))}
+          {nav.map((item) => <NavAnchor key={item.href} href={item.href} className="menu-line" tabIndex={open ? 0 : -1} onClick={() => toggle(false)}><span className="menu-item t-display">{item.label}</span></NavAnchor>)}
         </nav>
         <div className="menu-foot t-mono">
           <a href={`mailto:${contact.email}`} tabIndex={open ? 0 : -1}>{contact.email}</a>
           <span>TOKYO, JAPAN</span>
-          <LanguageToggle />
+          <LanguageToggle onLanguageChange={() => toggle(false)} />
         </div>
       </div>
     </div>
