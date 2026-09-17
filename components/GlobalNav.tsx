@@ -9,7 +9,7 @@ import NavAnchor from "@/components/NavAnchor";
 import LanguageToggle from "@/components/LanguageToggle";
 
 const links = [
-  { href: "/works", label: "WORK" },
+  { href: "/works", label: "WORKS" },
   { href: "/about", label: "ABOUT" },
   { href: "/contact", label: "CONTACT" },
 ];
