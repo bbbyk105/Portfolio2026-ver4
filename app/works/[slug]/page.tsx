@@ -27,12 +27,6 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-/**
- * One case study: the spec sheet first — client, sector, role, year, stack,
- * the live URL — then the site itself at desktop and phone size, then the
- * brief, what was built, and the stack. Closes with the next entry in the
- * register so the reader keeps moving.
- */
 export default async function WorkPage({ params }: Params) {
   const { slug } = await params;
   const work = getWork(slug);
@@ -85,10 +79,6 @@ export default async function WorkPage({ params }: Params) {
                 <dd>{work.year}</dd>
               </div>
               <div>
-                <dt>STACK</dt>
-                <dd>{work.stack.join(" / ")}</dd>
-              </div>
-              <div>
                 <dt>LIVE</dt>
                 <dd>
                   <a href={work.url} target="_blank" rel="noreferrer" className="spec-link">
@@ -113,7 +103,7 @@ export default async function WorkPage({ params }: Params) {
 
         <section className="scene work-body">
           <Reveal className="work-section">
-            <SectionHead index="01" label="BRIEF" />
+            <SectionHead index="01" label="PROJECT" />
             <div className="brief">
               {work.brief.map((p) => (
                 <p className="t-body soft-in" key={p}>
@@ -124,7 +114,7 @@ export default async function WorkPage({ params }: Params) {
           </Reveal>
 
           <Reveal className="work-section">
-            <SectionHead index="02" label="BUILT" />
+            <SectionHead index="02" label="DELIVERED" />
             <ol className="built t-body">
               {work.built.map((item, i) => (
                 <li key={item} className="soft-in">
@@ -136,7 +126,7 @@ export default async function WorkPage({ params }: Params) {
           </Reveal>
 
           <Reveal className="work-section">
-            <SectionHead index="03" label="STACK" />
+            <SectionHead index="03" label="TECHNOLOGY" />
             <div className="cap-chips">
               {work.stack.map((term) => (
                 <span className="cap-chip t-mono soft-in" key={term}>
