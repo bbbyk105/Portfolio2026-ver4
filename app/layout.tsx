@@ -4,6 +4,7 @@ import "./globals.css";
 import "./spacing.css";
 import "./capabilities-refine.css";
 import "./pro-refine.css";
+import "./i18n.css";
 
 export const metadata: Metadata = {
   title: "Byakko Kondo — Engineer / Creative Developer",
