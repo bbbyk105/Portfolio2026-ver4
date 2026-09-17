@@ -1,6 +1,5 @@
 import Link from "next/link";
-import GlobalNav from "@/components/GlobalNav";
-import SmoothScroll from "@/components/SmoothScroll";
+import PageChrome from "@/components/PageChrome";
 import ScrollProgress from "@/components/ScrollProgress";
 import Marquee from "@/components/Marquee";
 import HeroScene from "@/components/scenes/HeroScene";
@@ -15,15 +14,8 @@ import { projects } from "@/lib/content";
 export default function Page() {
   return (
     <>
-      <SmoothScroll />
-      <GlobalNav />
+      <PageChrome />
       <ScrollProgress />
-
-      {/* Column rails running the full page height, under the document. */}
-      <div className="rails" aria-hidden="true">
-        <span />
-        <span />
-      </div>
 
       <main className="doc">
         <HeroScene />
@@ -37,15 +29,11 @@ export default function Page() {
             ))}
           </div>
 
-          {/* The systems above are what I build; the register is what has
-              shipped. This row is the way into it. */}
           <Reveal>
             <Link href="/works" className="next-link work-all soft-in">
               <span className="t-mono next-label">FIVE PRODUCTS IN PRODUCTION</span>
               <span className="t-display next-name">ALL WORKS</span>
-              <span className="t-mono next-arrow" aria-hidden="true">
-                →
-              </span>
+              <span className="t-mono next-arrow" aria-hidden="true">→</span>
             </Link>
           </Reveal>
         </div>
