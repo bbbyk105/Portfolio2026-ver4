@@ -1,0 +1,146 @@
+/* Responsive spacing pass.
+   The vertical rails remain as the outer document frame; content sits
+   deliberately inside them instead of touching the frame. */
+
+:root {
+  --frame-inset: clamp(1rem, 2.6vw, 2.5rem);
+}
+
+/* Case-study content needs a second inset inside the persistent rails. */
+.work-hero,
+.work-plates,
+.work-body,
+.work-next {
+  padding-left: calc(var(--gutter) + var(--frame-inset));
+  padding-right: calc(var(--gutter) + var(--frame-inset));
+}
+
+/* Give the title block more vertical separation before the ruled metadata. */
+.work-statement {
+  margin-top: clamp(1.75rem, 4vh, 3rem);
+}
+
+.spec {
+  margin-top: clamp(3rem, 7vh, 5rem);
+  column-gap: clamp(2rem, 5vw, 5rem);
+}
+
+.spec > div {
+  gap: 0.75rem;
+  padding: clamp(1.35rem, 3vh, 2rem) 0;
+}
+
+/* Screens should not immediately collide with the metadata frame. */
+.work-plates {
+  padding-top: clamp(1.25rem, 3vh, 2.25rem);
+}
+
+.work-plates-grid {
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+}
+
+/* Keep the editorial sections airy after the screen plates. */
+.work-body {
+  padding-top: clamp(3rem, 8vh, 6rem);
+}
+
+.work-section + .work-section {
+  margin-top: clamp(4rem, 10vh, 7rem);
+}
+
+.built li {
+  gap: clamp(1rem, 2vw, 1.75rem);
+  padding: clamp(1.15rem, 2.6vh, 1.65rem) 0;
+}
+
+@media (min-width: 900px) {
+  :root {
+    --frame-inset: clamp(1.75rem, 3vw, 3.5rem);
+  }
+
+  .work-hero {
+    padding-top: clamp(7rem, 17vh, 11rem);
+    padding-bottom: clamp(5rem, 11vh, 8rem);
+  }
+
+  .spec {
+    column-gap: clamp(2.5rem, 5vw, 6rem);
+  }
+
+  .work-section {
+    column-gap: clamp(3rem, 7vw, 7rem);
+    padding-top: clamp(1.25rem, 2.5vh, 1.75rem);
+  }
+}
+
+@media (max-width: 899px) {
+  :root {
+    /* Keep the existing rails close to the viewport edge, then create a
+       visible content margin inside them. */
+    --gutter: clamp(1.15rem, 4.8vw, 1.5rem);
+    --frame-inset: clamp(0.9rem, 3.8vw, 1.2rem);
+  }
+
+  .work-hero {
+    padding-top: clamp(8rem, 18vh, 10rem);
+    padding-bottom: clamp(4.25rem, 9vh, 6rem);
+  }
+
+  .work-title {
+    margin-top: clamp(2rem, 4.5vh, 3rem);
+  }
+
+  .work-statement {
+    margin-top: clamp(1.75rem, 4vh, 2.5rem);
+    line-height: 1.85;
+  }
+
+  .spec {
+    grid-template-columns: 1fr;
+    margin-top: clamp(3rem, 7vh, 4.5rem);
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .spec > div {
+    padding: 1.35rem 0 1.5rem;
+  }
+
+  .work-plates {
+    padding-top: clamp(1.75rem, 4vh, 2.5rem);
+  }
+
+  .work-body {
+    padding-top: clamp(3.5rem, 8vh, 5rem);
+  }
+
+  .work-body .section-head {
+    margin-bottom: clamp(1.75rem, 4vh, 2.5rem);
+  }
+}
+
+@media (max-width: 430px) {
+  :root {
+    --gutter: 1rem;
+    --frame-inset: 0.85rem;
+  }
+
+  .work-hero,
+  .work-plates,
+  .work-body,
+  .work-next {
+    padding-left: calc(var(--gutter) + var(--frame-inset));
+    padding-right: calc(var(--gutter) + var(--frame-inset));
+  }
+
+  .work-kicker {
+    gap: 0.75rem;
+  }
+
+  .work-title {
+    font-size: clamp(2.6rem, 13vw, 4rem);
+  }
+
+  .work-statement {
+    font-size: 0.82rem;
+  }
+}
