@@ -14,6 +14,14 @@ const links = [
   { href: "/contact", label: "CONTACT" },
 ];
 
+function NavLabel({ href, label }: { href: string; label: string }) {
+  // Keep the primary WORKS label as display typography in both languages.
+  // Splitting the text nodes prevents the legacy document translator from
+  // replacing this navigation label with the Japanese word for works.
+  if (href === "/works") return <><span>WORK</span><span>S</span></>;
+  return <>{label}</>;
+}
+
 export default function GlobalNav() {
   const root = useRef<HTMLDivElement>(null);
   const tl = useRef<gsap.core.Timeline | null>(null);
@@ -57,7 +65,7 @@ export default function GlobalNav() {
           <span className="nav-role block" style={{ color: "var(--dim)" }}>ENGINEER / CREATIVE DEVELOPER</span>
         </div>
         <div className="nav-right">
-          <nav className="nav-links t-mono" aria-label="Primary">{links.map((item) => <NavAnchor key={item.href} href={item.href}>{item.label}</NavAnchor>)}</nav>
+          <nav className="nav-links t-mono" aria-label="Primary">{links.map((item) => <NavAnchor key={item.href} href={item.href}><NavLabel href={item.href} label={item.label} /></NavAnchor>)}</nav>
           <LanguageToggle />
           <NavAnchor className="nav-cta t-mono" href="/contact">GET IN TOUCH</NavAnchor>
         </div>
@@ -66,7 +74,7 @@ export default function GlobalNav() {
       <div id="site-menu" className="menu" hidden={false} aria-hidden={!open}>
         <nav className="menu-list" aria-label="Menu">
           <NavAnchor href="/#hero" className="menu-line" tabIndex={open ? 0 : -1} onClick={() => toggle(false)}><span className="menu-item t-display">HOME</span></NavAnchor>
-          {links.map((item) => <NavAnchor key={item.href} href={item.href} className="menu-line" tabIndex={open ? 0 : -1} onClick={() => toggle(false)}><span className="menu-item t-display">{item.label}</span></NavAnchor>)}
+          {links.map((item) => <NavAnchor key={item.href} href={item.href} className="menu-line" tabIndex={open ? 0 : -1} onClick={() => toggle(false)}><span className="menu-item t-display"><NavLabel href={item.href} label={item.label} /></span></NavAnchor>)}
         </nav>
         <div className="menu-foot t-mono"><a href={`mailto:${contact.email}`} tabIndex={open ? 0 : -1}>{contact.email}</a><span>TOKYO, JAPAN</span><LanguageToggle onLanguageChange={() => toggle(false)} /></div>
       </div>
