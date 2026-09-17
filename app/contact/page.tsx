@@ -1,0 +1,37 @@
+import type { Metadata } from "next";
+import PageChrome from "@/components/PageChrome";
+import SectionHead from "@/components/SectionHead";
+import SiteFooter from "@/components/SiteFooter";
+import ContactForm from "@/components/ContactForm";
+
+export const metadata: Metadata = {
+  title: "Contact — Byakko Kondo",
+  description: "Contact Byakko Kondo about product development, web engineering and digital projects.",
+};
+
+export default function ContactPage() {
+  return (
+    <>
+      <PageChrome />
+      <main className="doc">
+        <section className="scene page-intro">
+          <SectionHead index="01" label="CONTACT" note="PROJECTS / COLLABORATION / ENQUIRIES" />
+          <h1 className="t-display page-title"><span className="line-mask"><span>LET'S BUILD</span></span><span className="line-mask"><span className="t-faint">SOMETHING.</span></span></h1>
+          <p className="t-body page-lede">Tell me what you are working on, what you need, and where the project currently stands. I will reply by email.</p>
+        </section>
+
+        <section className="scene work-body">
+          <div className="work-section">
+            <SectionHead index="02" label="ENQUIRY" />
+            <ContactForm />
+          </div>
+          <div className="work-section">
+            <SectionHead index="03" label="DIRECT" />
+            <div className="brief"><p className="t-body">Prefer email? <a className="spec-link" href="mailto:byakkokondo@gmail.com">byakkokondo@gmail.com ↗</a></p></div>
+          </div>
+        </section>
+        <footer className="scene site-foot"><SiteFooter /></footer>
+      </main>
+    </>
+  );
+}
