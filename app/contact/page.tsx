@@ -17,10 +17,7 @@ export default function ContactPage() {
       <main className="doc">
         <section className="scene page-intro">
           <SectionHead index="01" label="CONTACT" note="PROJECTS / COLLABORATION / ENQUIRIES" />
-          <h1 className="t-display page-title">
-            <span className="line-mask"><span><LocalizedText en="LET'S BUILD" ja="一緒に、" /></span></span>
-            <span className="line-mask"><span className="t-faint"><LocalizedText en="SOMETHING." ja="つくりましょう。" /></span></span>
-          </h1>
+          <h1 className="t-display page-title"><span className="line-mask"><span>LET&apos;S BUILD</span></span><span className="line-mask"><span className="t-faint">SOMETHING.</span></span></h1>
           <p className="t-body page-lede"><LocalizedText en="Tell me what you are working on, what you need, and where the project currently stands. I will reply by email." ja="取り組んでいること、必要としていること、現在のプロジェクト状況をお聞かせください。メールでご返信します。" /></p>
         </section>
 
@@ -31,7 +28,7 @@ export default function ContactPage() {
           </div>
           <div className="work-section">
             <SectionHead index="03" label="DIRECT" />
-            <div className="brief"><p className="t-body"><LocalizedText en="Prefer email? " ja="メールから直接ご連絡いただく場合はこちら：" /><a className="spec-link" href="mailto:byakkokondo@gmail.com">byakkokondo@gmail.com ↗</a></p></div>
+            <div className="brief"><p className="t-body"><LocalizedText en="Prefer email? " ja="メールで直接ご連絡いただく場合はこちら。" /><a className="spec-link" href="mailto:byakkokondo@gmail.com">byakkokondo@gmail.com ↗</a></p></div>
           </div>
         </section>
         <footer className="scene site-foot"><SiteFooter /></footer>
