@@ -10,39 +10,31 @@
 #capabilities .cap-tab-count { color:var(--dimmer); font-size:.58rem; }
 #capabilities .cap-panel { min-width:0; min-height:0; border:0; border-top:1px solid var(--line); border-radius:0; background:transparent; padding:0; overflow:visible; }
 #capabilities .cap-swap { padding:1.1rem 0 0; }
-#capabilities .cap-panel-head { margin:0 0 clamp(2rem,5vh,3.5rem); color:var(--dimmer); letter-spacing:.12em; }
-#capabilities .cap-panel-head .typed-src { visibility:visible !important; }
-#capabilities .cap-panel-head .typed-src::before { content:"SELECTED / "; color:var(--white); }
-/* The terminal typing caret looked like a stray blue focus indicator on mobile. */
-#capabilities .typed-caret,
-#capabilities .cap-panel-head .typed-caret { display:none !important; visibility:hidden !important; opacity:0 !important; width:0 !important; }
+#capabilities .cap-panel-head { display:flex; flex-wrap:wrap; gap:.55em; margin:0 0 clamp(2rem,5vh,3.5rem); color:var(--dimmer); letter-spacing:.1em; }
+#capabilities .cap-selected { color:var(--white); flex:none; }
+#capabilities .cap-command { min-width:0; overflow-wrap:anywhere; }
 #capabilities .cap-chips { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0; border-top:1px solid var(--line-soft); }
 #capabilities .cap-chip { min-width:0; display:flex; align-items:center; gap:clamp(.8rem,2vw,1.15rem); min-height:74px; padding:1rem 0; border:0; border-bottom:1px solid var(--line-soft); border-radius:0; background:transparent; color:rgba(255,255,255,.82); letter-spacing:.11em; }
 #capabilities .cap-chip:nth-child(odd) { padding-right:clamp(1rem,3vw,2rem); }
 #capabilities .cap-chip:nth-child(even) { padding-left:clamp(1rem,3vw,2rem); border-left:1px solid var(--line-soft); }
 #capabilities .cap-chip img { width:22px !important; height:22px !important; opacity:.9; }
-
 @media (max-width:899px) {
-  #capabilities { overflow:hidden; padding-top:clamp(6rem,14vh,8rem); padding-bottom:clamp(6rem,14vh,8rem); }
-  #capabilities .cap-heading { max-width:100%; margin-top:clamp(3rem,7vh,4.5rem); margin-bottom:clamp(4rem,9vh,5.5rem); font-size:clamp(2.7rem,11vw,4.4rem); line-height:.98; }
-  #capabilities .cap-layout { display:block; }
-  #capabilities .cap-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-top:1px solid var(--line); margin-bottom:clamp(4rem,9vh,5.5rem); overflow:hidden; }
-  #capabilities .cap-tab { min-height:72px; padding:1.15rem 1rem; }
-  #capabilities .cap-tab:nth-child(odd) { padding-left:1rem; padding-right:1.15rem; }
-  #capabilities .cap-tab:nth-child(even) { padding-left:1.15rem; padding-right:1rem; border-left:1px solid var(--line-soft); }
-  #capabilities .cap-tab.is-active { padding-left:1.35rem; }
-  #capabilities .cap-tab.is-active::after { left:0; top:50%; transform:translateY(-50%); height:1.35rem; }
-  #capabilities .cap-tab-label { white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:normal; word-break:normal; text-wrap:balance; }
-  #capabilities .cap-tab-count { display:none; }
-  #capabilities .cap-panel { width:100%; }
-  #capabilities .cap-swap { padding-top:1.5rem; }
-  #capabilities .cap-panel-head { margin-bottom:clamp(2.75rem,6vh,4rem); padding-inline:1rem; white-space:nowrap; overflow:hidden; text-overflow:clip; }
-  #capabilities .cap-chips { grid-template-columns:1fr; }
-  #capabilities .cap-chip,#capabilities .cap-chip:nth-child(odd),#capabilities .cap-chip:nth-child(even) { min-height:82px; padding:1.25rem 1rem; border-left:0; }
-  #capabilities .cap-chip img { width:23px !important; height:23px !important; }
+ #capabilities { overflow:hidden; padding-top:clamp(6rem,14vh,8rem); padding-bottom:clamp(6rem,14vh,8rem); }
+ #capabilities .cap-heading { max-width:100%; margin-top:clamp(3rem,7vh,4.5rem); margin-bottom:clamp(4rem,9vh,5.5rem); font-size:clamp(2.7rem,11vw,4.4rem); line-height:.98; }
+ #capabilities .cap-layout { display:block; }
+ #capabilities .cap-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-top:1px solid var(--line); margin-bottom:clamp(4rem,9vh,5.5rem); overflow:hidden; }
+ #capabilities .cap-tab { min-height:72px; padding:1.15rem 1rem; }
+ #capabilities .cap-tab:nth-child(odd) { padding-left:1rem; padding-right:1.15rem; }
+ #capabilities .cap-tab:nth-child(even) { padding-left:1.15rem; padding-right:1rem; border-left:1px solid var(--line-soft); }
+ #capabilities .cap-tab.is-active { padding-left:1.35rem; }
+ #capabilities .cap-tab.is-active::after { left:0; top:50%; transform:translateY(-50%); height:1.35rem; }
+ #capabilities .cap-tab-label { white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:normal; word-break:normal; text-wrap:balance; }
+ #capabilities .cap-tab-count { display:none; }
+ #capabilities .cap-panel { width:100%; }
+ #capabilities .cap-swap { padding-top:1.5rem; }
+ #capabilities .cap-panel-head { padding-inline:1rem; margin-bottom:clamp(2.75rem,6vh,4rem); white-space:normal; overflow:visible; font-size:clamp(.7rem,3.2vw,.86rem); line-height:1.65; }
+ #capabilities .cap-chips { grid-template-columns:1fr; }
+ #capabilities .cap-chip,#capabilities .cap-chip:nth-child(odd),#capabilities .cap-chip:nth-child(even) { min-height:82px; padding:1.25rem 1rem; border-left:0; }
+ #capabilities .cap-chip img { width:23px !important; height:23px !important; }
 }
-
-@media (max-width:430px) {
-  #capabilities .cap-tab { min-height:76px; }
-  #capabilities .cap-panel-head,#capabilities .cap-chip,#capabilities .cap-chip:nth-child(odd),#capabilities .cap-chip:nth-child(even) { padding-left:1.15rem; padding-right:1.15rem; }
-}
+@media (max-width:430px) { #capabilities .cap-tab { min-height:76px; } #capabilities .cap-panel-head,#capabilities .cap-chip,#capabilities .cap-chip:nth-child(odd),#capabilities .cap-chip:nth-child(even) { padding-left:1.15rem; padding-right:1.15rem; } }
