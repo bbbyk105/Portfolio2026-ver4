@@ -3,6 +3,7 @@ import { display, mono } from "./fonts";
 import "./globals.css";
 import "./spacing.css";
 import "./capabilities-refine.css";
+import "./pro-refine.css";
 
 export const metadata: Metadata = {
   title: "Byakko Kondo — Engineer / Creative Developer",
