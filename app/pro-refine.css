@@ -1,0 +1,66 @@
+/* Professional design-engineer refinement — preserves the code-first hero. */
+
+:root {
+  --pro-line: color-mix(in srgb, currentColor 13%, transparent);
+  --pro-line-soft: color-mix(in srgb, currentColor 7%, transparent);
+}
+
+/* Keep the hero concept; improve its hierarchy instead of redesigning it. */
+#hero .hero-head { position: relative; z-index: 2; }
+#hero .hero-intro { max-width: 42rem; text-wrap: balance; }
+#hero .hero-panel {
+  border-color: var(--pro-line);
+  box-shadow: 0 24px 80px rgba(0,0,0,.28);
+}
+#hero .hero-glow { opacity: .58; filter: blur(8px); }
+
+/* One consistent editorial rhythm across the whole page. */
+.scene { position: relative; }
+.scene + .scene { border-top-color: var(--pro-line-soft); }
+
+/* Links should feel engineered, not decorated. */
+.next-link { position: relative; isolation: isolate; }
+.next-link .next-arrow { transition: transform .45s cubic-bezier(.22,1,.36,1), opacity .3s ease; }
+@media (hover:hover) and (pointer:fine) {
+  .next-link:hover .next-arrow { transform: translateX(.45rem); }
+}
+
+/* Work CTA: less empty-card feeling, more editorial index. */
+.work-all {
+  border-top: 1px solid var(--pro-line);
+  border-bottom: 1px solid var(--pro-line-soft);
+}
+.work-all .next-label { opacity: .62; letter-spacing: .08em; }
+.work-all .next-name { letter-spacing: -.045em; }
+
+/* Capabilities: typography first, UI chrome second. */
+#capabilities .cap-tabs { border-color: var(--pro-line-soft); }
+#capabilities .cap-tab {
+  transition: opacity .25s ease, transform .35s cubic-bezier(.22,1,.36,1), background-color .25s ease;
+}
+#capabilities .cap-tab:not(.is-active) { opacity: .52; }
+#capabilities .cap-tab.is-active { opacity: 1; }
+@media (hover:hover) and (pointer:fine) {
+  #capabilities .cap-tab:not(.is-active):hover { opacity: .86; transform: translateX(.25rem); }
+}
+
+/* Mobile: preserve whitespace, but make it deliberate rather than vacant. */
+@media (max-width: 899px) {
+  #hero .hero-glow { opacity: .42; }
+  #hero .hero-intro { max-width: 34rem; }
+  #hero .hero-panel { box-shadow: 0 18px 54px rgba(0,0,0,.24); }
+
+  #work { padding-bottom: clamp(2rem,5vh,3rem); }
+  #about { padding-top: clamp(3.25rem,7vh,4.75rem); }
+
+  .work-all { overflow: clip; }
+  .work-all .next-arrow { max-width: 100%; }
+
+  #capabilities .cap-tab { min-height: 3rem; }
+  #capabilities .cap-tab.is-active::after { top: 50%; transform: translateY(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .next-link .next-arrow,
+  #capabilities .cap-tab { transition: none; }
+}
