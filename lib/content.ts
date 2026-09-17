@@ -13,7 +13,7 @@ export const projects: Project[] = [
   { id:"workflow", title:["AUTOMATION","SYSTEMS"], meta:["WORKFLOW AUTOMATION","API INTEGRATION"], year:"2025—2026", statement:"Automation work connecting APIs and data-processing steps for research and operational workflows.", notes:["Python","FastAPI","n8n"], wide:true, code:{ label:"Python", filename:"pipeline.py", lines:["data = fetch_source(identifier)","","result = process(data)","return result"] } },
 ];
 
-export const hero = { eyebrow:"BYAKKO KONDO — ENGINEER / CREATIVE DEVELOPER", lines:["BUILD DIGITAL","SYSTEMS."], intro:"I design and build digital products, web experiences, and automation systems from research prototypes to production services.", ctas:[{label:"VIEW WORK",href:"#work"},{label:"GET IN TOUCH",href:"#contact"}], tabs:[{label:"TypeScript",filename:"product.ts",lines:['import { build } from "./product";',"",'const product = build({ base: "Tokyo", year: 2026 });',"await product.design();","await product.ship();"]},{label:"Python",filename:"research.py",lines:["structures = fetch_structures(uniprot_id)","","distances = analyse(structures)","export_results(distances)"]}] as Snippet[] };
+export const hero = { eyebrow:"BYAKKO KONDO — ENGINEER / CREATIVE DEVELOPER", lines:["BUILD DIGITAL","SYSTEMS."], intro:"I design and build digital products, web experiences, and automation systems from research prototypes to production services.", ctas:[{label:"VIEW WORK",href:"/works"},{label:"ABOUT ME",href:"/about"},{label:"GET IN TOUCH",href:"/contact"}], tabs:[{label:"TypeScript",filename:"product.ts",lines:['import { build } from "./product";',"",'const product = build({ base: "Tokyo", year: 2026 });',"await product.design();","await product.ship();"]},{label:"Python",filename:"research.py",lines:["structures = fetch_structures(uniprot_id)","","distances = analyse(structures)","export_results(distances)"]}] as Snippet[] };
 export const work = { headline:["SELECTED WORK,","2025—2026."] };
 export const marquee = { label:"TOOLS & TECHNOLOGIES" };
 export const about = { statement:["I BUILD","PRODUCTS FROM","IDEA TO","IMPLEMENTATION."], identity:["BYAKKO KONDO","ENGINEER / CREATIVE DEVELOPER","TOKYO, JAPAN"], paragraphs:["My work spans mobile apps, web development, research software, and workflow automation. I studied life science at Gakushuin University, where I developed software for protein structure analysis.","Today I work across personal product development and client projects, focusing on practical systems that are clear, reliable, and usable."] };
@@ -27,5 +27,5 @@ export const capabilityGroups: CapabilityGroup[] = [
   { label:"BACKEND / AUTOMATION", slug:"backend", items:["FastAPI","PostgreSQL","Docker","n8n"] },
 ];
 
-export const contact = { lines:["LET'S","BUILD","SOMETHING."], email:"hello@byakko.dev", links:[{label:"GITHUB",href:"https://github.com/bbbyk105"},{label:"X",href:"https://x.com/"},{label:"LINKEDIN",href:"https://www.linkedin.com/"}] };
-export const nav = [{label:"WORK",href:"/works"},{label:"ABOUT",href:"/#about"},{label:"CONTACT",href:"/#contact"}];
+export const contact = { lines:["LET'S","BUILD","SOMETHING."], email:"byakkokondo@gmail.com", links:[{label:"GITHUB",href:"https://github.com/bbbyk105"}] };
+export const nav = [{label:"WORK",href:"/works"},{label:"ABOUT",href:"/about"},{label:"CONTACT",href:"/contact"}];
