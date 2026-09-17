@@ -1,0 +1,199 @@
+/* Editorial refinement for the capabilities section.
+   Removes the terminal/dashboard feel in favour of a restrained studio index. */
+
+#capabilities .cap-heading {
+  max-width: 9ch;
+  margin-bottom: clamp(3.5rem, 8vh, 6rem);
+}
+
+#capabilities .cap-layout {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.34fr) minmax(0, 1fr);
+  gap: clamp(2.5rem, 7vw, 7rem);
+  align-items: start;
+}
+
+#capabilities .cap-tabs {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+}
+
+#capabilities .cap-tab {
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.15rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  border-radius: 0;
+  background: transparent;
+  color: var(--dimmer);
+  text-align: left;
+  cursor: pointer;
+  transition: color .3s ease, padding-left .45s cubic-bezier(.16,1,.3,1);
+}
+
+#capabilities .cap-tab::before {
+  content: none;
+}
+
+#capabilities .cap-tab:hover,
+#capabilities .cap-tab.is-active {
+  color: var(--white);
+  background: transparent;
+  border-color: var(--line);
+}
+
+#capabilities .cap-tab.is-active {
+  padding-left: .85rem;
+}
+
+#capabilities .cap-tab.is-active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 2px;
+  height: 1.25rem;
+  background: var(--blue);
+}
+
+#capabilities .cap-tab-count {
+  color: var(--dimmer);
+  font-size: .58rem;
+}
+
+#capabilities .cap-panel {
+  min-width: 0;
+  min-height: 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  overflow: visible;
+}
+
+#capabilities .cap-swap {
+  padding: 1.1rem 0 0;
+}
+
+#capabilities .cap-panel-head {
+  margin: 0 0 clamp(2rem, 5vh, 3.5rem);
+  color: var(--dimmer);
+  letter-spacing: .12em;
+}
+
+#capabilities .cap-panel-head .typed-src {
+  visibility: visible !important;
+}
+
+#capabilities .cap-panel-head .typed-src::before {
+  content: "SELECTED / ";
+  color: var(--white);
+}
+
+#capabilities .typed-caret {
+  display: none;
+}
+
+#capabilities .cap-chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--line-soft);
+}
+
+#capabilities .cap-chip {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(.8rem, 2vw, 1.15rem);
+  min-height: 74px;
+  padding: 1rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  border-radius: 0;
+  background: transparent;
+  color: rgba(255,255,255,.82);
+  letter-spacing: .11em;
+}
+
+#capabilities .cap-chip:nth-child(odd) {
+  padding-right: clamp(1rem, 3vw, 2rem);
+}
+
+#capabilities .cap-chip:nth-child(even) {
+  padding-left: clamp(1rem, 3vw, 2rem);
+  border-left: 1px solid var(--line-soft);
+}
+
+#capabilities .cap-chip img {
+  width: 22px !important;
+  height: 22px !important;
+  opacity: .9;
+}
+
+@media (max-width: 899px) {
+  #capabilities {
+    overflow: hidden;
+  }
+
+  #capabilities .cap-heading {
+    margin-bottom: 3rem;
+  }
+
+  #capabilities .cap-layout {
+    display: block;
+  }
+
+  #capabilities .cap-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    margin-bottom: 2.75rem;
+    overflow: visible;
+  }
+
+  #capabilities .cap-tab {
+    padding: 1rem 0;
+  }
+
+  #capabilities .cap-tab:nth-child(odd) {
+    padding-right: .85rem;
+  }
+
+  #capabilities .cap-tab:nth-child(even) {
+    padding-left: .85rem;
+    border-left: 1px solid var(--line-soft);
+  }
+
+  #capabilities .cap-tab.is-active {
+    padding-left: .65rem;
+  }
+
+  #capabilities .cap-tab-label {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  #capabilities .cap-panel {
+    width: 100%;
+  }
+
+  #capabilities .cap-chips {
+    grid-template-columns: 1fr;
+  }
+
+  #capabilities .cap-chip,
+  #capabilities .cap-chip:nth-child(odd),
+  #capabilities .cap-chip:nth-child(even) {
+    min-height: 66px;
+    padding: .9rem 0;
+    border-left: 0;
+  }
+}
