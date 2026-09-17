@@ -53,6 +53,45 @@
   padding: clamp(1.15rem, 2.6vh, 1.65rem) 0;
 }
 
+/* Technology ticker: keep every mark inside the persistent document rails.
+   The previous full-bleed track made icons visibly cross the frame. */
+.marquee-wrap {
+  overflow: hidden;
+  padding-block: clamp(3.5rem, 9vh, 6rem);
+}
+
+.marquee-label {
+  margin-bottom: clamp(2rem, 5vh, 3.25rem);
+}
+
+.marquee {
+  margin-inline: var(--gutter);
+  overflow: hidden;
+  padding-block: 0.35rem;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+}
+
+.marquee-half {
+  gap: 0.7rem;
+  padding-right: 0.7rem;
+}
+
+.marquee-item {
+  gap: 0.75rem;
+  padding: 0.85rem 1.15rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.025);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.marquee-item img {
+  width: 20px;
+  height: 20px;
+  flex: none;
+}
+
 @media (min-width: 900px) {
   :root {
     --frame-inset: clamp(1.75rem, 3vw, 3.5rem);
@@ -70,6 +109,10 @@
   .work-section {
     column-gap: clamp(3rem, 7vw, 7rem);
     padding-top: clamp(1.25rem, 2.5vh, 1.75rem);
+  }
+
+  .marquee {
+    margin-inline: calc(var(--gutter) + var(--frame-inset));
   }
 }
 
@@ -116,6 +159,14 @@
   .work-body .section-head {
     margin-bottom: clamp(1.75rem, 4vh, 2.5rem);
   }
+
+  .marquee {
+    margin-inline: calc(var(--gutter) + 0.35rem);
+  }
+
+  .marquee-item {
+    padding: 0.75rem 1rem;
+  }
 }
 
 @media (max-width: 430px) {
@@ -142,5 +193,13 @@
 
   .work-statement {
     font-size: 0.82rem;
+  }
+
+  .marquee-wrap {
+    padding-block: 3.25rem;
+  }
+
+  .marquee {
+    margin-inline: calc(var(--gutter) + 0.25rem);
   }
 }
