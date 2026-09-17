@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { display, mono } from "./fonts";
 import "./globals.css";
 import "./spacing.css";
+import "./capabilities-refine.css";
 
 export const metadata: Metadata = {
   title: "Byakko Kondo — Engineer / Creative Developer",
