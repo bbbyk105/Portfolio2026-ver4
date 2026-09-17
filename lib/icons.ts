@@ -1,8 +1,4 @@
-/**
- * Term → bundled local brand mark.
- * Keep technology icons local so the portfolio has no runtime dependency on
- * an external SVG CDN. React Native shares the React mark.
- */
+/** Term → bundled local brand mark. Keep icons local to avoid runtime CDN dependencies. */
 export const brandIcons: Record<string, string> = {
   TypeScript: "/icons/typescript.svg",
   Python: "/icons/python.svg",
@@ -13,4 +9,5 @@ export const brandIcons: Record<string, string> = {
   Supabase: "/icons/supabase.svg",
   PostgreSQL: "/icons/postgresql.svg",
   Docker: "/icons/docker.svg",
+  n8n: "/icons/n8n.svg",
 };
