@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url("https://cdn.jsdelivr.net/gh/bbbyk105/Portfolio2026-ver4@68a288aa9274261d5903d17826568a87dd1d3512/app/globals.css");
+@import "tailwindcss";
 
 /* Footer refresh */
 .footer-head {
