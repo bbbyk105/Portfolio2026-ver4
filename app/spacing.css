@@ -146,10 +146,19 @@
 
 @media (max-width: 899px) {
   :root {
-    /* Keep the existing rails close to the viewport edge, then create a
-       visible content margin inside them. */
-    --gutter: clamp(1.15rem, 4.8vw, 1.5rem);
-    --frame-inset: clamp(0.9rem, 3.8vw, 1.2rem);
+    /* The rails remain close to the edge while the content gets a deliberate
+       editorial inset, so text and controls do not visually cling to them. */
+    --gutter: clamp(1.5rem, 6vw, 2rem);
+    --frame-inset: clamp(1rem, 4vw, 1.35rem);
+  }
+
+  .scene {
+    padding-top: clamp(6rem, 14vh, 8rem);
+    padding-bottom: clamp(6rem, 14vh, 8rem);
+  }
+
+  .section-head {
+    margin-bottom: clamp(3rem, 7vh, 4.5rem);
   }
 
   .work-hero {
@@ -186,6 +195,40 @@
 
   .work-body .section-head {
     margin-bottom: clamp(1.75rem, 4vh, 2.5rem);
+  }
+
+  .about-grid {
+    gap: clamp(4.5rem, 10vh, 6rem);
+  }
+
+  .about-statement {
+    font-size: clamp(2.35rem, 10vw, 4.8rem);
+    line-height: 1.02;
+  }
+
+  .t-body {
+    line-height: 1.9;
+  }
+
+  .contact-type {
+    font-size: clamp(3rem, 14vw, 6.5rem);
+    line-height: .98;
+  }
+
+  .contact-rail {
+    margin-top: clamp(4rem, 9vh, 6rem);
+    padding-top: clamp(1.75rem, 4vh, 2.5rem);
+    gap: 2rem;
+  }
+
+  .contact-social {
+    width: 100%;
+    margin-left: 0 !important;
+    gap: .75rem;
+  }
+
+  .footer-grid {
+    margin-top: clamp(4.5rem, 10vh, 6.5rem);
   }
 
   .marquee {
@@ -225,8 +268,8 @@
 
 @media (max-width: 430px) {
   :root {
-    --gutter: 1rem;
-    --frame-inset: 0.85rem;
+    --gutter: 1.35rem;
+    --frame-inset: 1rem;
   }
 
   .work-hero,
@@ -247,6 +290,18 @@
 
   .work-statement {
     font-size: 0.82rem;
+  }
+
+  .about-statement {
+    font-size: clamp(2.2rem, 10.5vw, 3.5rem);
+  }
+
+  .contact-type {
+    font-size: clamp(2.85rem, 13.5vw, 4.8rem);
+  }
+
+  .contact-mail {
+    font-size: clamp(.82rem, 4.1vw, 1rem);
   }
 
   .marquee-wrap {
