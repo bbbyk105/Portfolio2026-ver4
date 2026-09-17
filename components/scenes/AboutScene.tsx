@@ -5,11 +5,10 @@ import { about } from "@/lib/content";
 import { gsap, MQ, EASE, DUR } from "@/lib/motion";
 import { useIsoLayoutEffect } from "@/lib/useIsoLayoutEffect";
 import SectionHead from "@/components/SectionHead";
-import Visual from "@/components/Visual";
 
 /**
- * Not a profile block: a small identity stamp on the left and a statement
- * large enough to be the page, revealed a line at a time.
+ * Editorial about section: identity stays restrained on the left while the
+ * statement and supporting copy carry the visual weight.
  */
 export default function AboutScene() {
   const root = useRef<HTMLElement>(null);
@@ -36,14 +35,6 @@ export default function AboutScene() {
         stagger: 0.08,
         scrollTrigger: { trigger: el, start: "top 62%" },
       });
-      // Wiped in from the side like a plate being placed, not raised up
-      // from below like a portrait being unveiled.
-      gsap.from(q(".portrait"), {
-        clipPath: "inset(0% 100% 0% 0%)",
-        duration: DUR.reveal,
-        ease: EASE.enter,
-        scrollTrigger: { trigger: el, start: "top 66%" },
-      });
     }, el);
 
     return () => mm.revert();
@@ -53,16 +44,7 @@ export default function AboutScene() {
     <section id="about" className="scene" ref={root}>
       <SectionHead index="02" label="ABOUT" />
       <div className="about-grid">
-        <div className="about-id stack-tight">
-          <div className="portrait">
-            <Visual
-              name="portrait"
-              width={760}
-              height={760}
-              smWidth={380}
-              alt="Byakko Kondo"
-            />
-          </div>
+        <div className="about-id stack-tight about-id--text">
           <span className="tick soft-in" />
           {about.identity.map((line, i) => (
             <p
