@@ -37,28 +37,23 @@ function applyDocumentLanguage(language: PortfolioLanguage) {
   document.documentElement.dataset.lang = language;
 }
 
-export default function LanguageToggle() {
+type Props = {
+  onLanguageChange?: (language: PortfolioLanguage) => void;
+};
+
+export default function LanguageToggle({ onLanguageChange }: Props) {
   const { language, changeLanguage } = usePortfolioLanguage(applyDocumentLanguage);
+
+  const selectLanguage = (next: PortfolioLanguage) => {
+    changeLanguage(next);
+    onLanguageChange?.(next);
+  };
 
   return (
     <div className="language-toggle t-mono" aria-label="Language selector">
-      <button
-        type="button"
-        className={language === "en" ? "is-active" : ""}
-        onClick={() => changeLanguage("en")}
-        aria-pressed={language === "en"}
-      >
-        EN
-      </button>
+      <button type="button" className={language === "en" ? "is-active" : ""} onClick={() => selectLanguage("en")} aria-pressed={language === "en"}>EN</button>
       <span className="language-toggle-divider" aria-hidden="true">/</span>
-      <button
-        type="button"
-        className={language === "ja" ? "is-active" : ""}
-        onClick={() => changeLanguage("ja")}
-        aria-pressed={language === "ja"}
-      >
-        JP
-      </button>
+      <button type="button" className={language === "ja" ? "is-active" : ""} onClick={() => selectLanguage("ja")} aria-pressed={language === "ja"}>JP</button>
     </div>
   );
 }
