@@ -9,6 +9,7 @@ import BrandIcon from "@/components/BrandIcon";
 import SiteFooter from "@/components/SiteFooter";
 import { brandIcons } from "@/lib/icons";
 import { works, getWork } from "@/lib/works";
+import "./work-detail.css";
 
 type Params = { params: Promise<{ slug: string }> };
 
