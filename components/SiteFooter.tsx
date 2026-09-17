@@ -1,29 +1,46 @@
 import NavAnchor from "@/components/NavAnchor";
-import LocalizedText from "@/components/LocalizedText";
 import { contact } from "@/lib/content";
 
 const links = [
-  { href: "/works", en: "WORK", ja: "実績" },
-  { href: "/about", en: "ABOUT", ja: "プロフィール" },
-  { href: "/contact", en: "CONTACT", ja: "お問い合わせ" },
+  { href: "/#hero", label: "HOME", index: "01" },
+  { href: "/works", label: "WORKS", index: "02" },
+  { href: "/about", label: "ABOUT", index: "03" },
+  { href: "/contact", label: "CONTACT", index: "04" },
 ];
 
 export default function SiteFooter() {
   return (
     <>
+      <div className="footer-head">
+        <p className="footer-eyebrow t-mono">NAVIGATION / CONTACT</p>
+        <p className="footer-statement t-display">LET&apos;S MAKE<br /><span className="t-faint">SOMETHING GOOD.</span></p>
+      </div>
+
       <div className="footer-grid t-mono">
-        <div className="footer-col">
-          <p className="footer-title"><LocalizedText en="SITEMAP" ja="サイトマップ" /></p>
-          <NavAnchor href="/#hero"><LocalizedText en="HOME" ja="ホーム" /></NavAnchor>
-          {links.map((item) => <NavAnchor key={item.href} href={item.href}><LocalizedText en={item.en} ja={item.ja} /></NavAnchor>)}
-        </div>
-        <div className="footer-col">
-          <p className="footer-title"><LocalizedText en="CONTACT" ja="お問い合わせ" /></p>
-          <a href={`mailto:${contact.email}`}>{contact.email}</a>
-          <p><LocalizedText en="TOKYO, JAPAN" ja="東京、日本" /></p>
+        <nav className="footer-nav" aria-label="Footer navigation">
+          {links.map((item) => (
+            <NavAnchor key={item.href} href={item.href} className="footer-nav-link">
+              <span className="footer-nav-index">{item.index}</span>
+              <span className="footer-nav-label">{item.label}</span>
+              <span className="footer-nav-arrow" aria-hidden="true">↗</span>
+            </NavAnchor>
+          ))}
+        </nav>
+
+        <div className="footer-contact">
+          <p className="footer-title">GET IN TOUCH</p>
+          <a className="footer-mail" href={`mailto:${contact.email}`}>{contact.email}</a>
+          <div className="footer-meta">
+            <span>TOKYO, JAPAN</span>
+            <span>AVAILABLE FOR PROJECTS</span>
+          </div>
         </div>
       </div>
-      <div className="footer-base t-mono"><span>© 2026 BYAKKO KONDO</span><span><LocalizedText en="TOKYO, JAPAN" ja="東京、日本" /></span></div>
+
+      <div className="footer-base t-mono">
+        <span>© 2026 BYAKKO KONDO</span>
+        <a href="#top" aria-label="Back to top">BACK TO TOP ↑</a>
+      </div>
     </>
   );
 }
