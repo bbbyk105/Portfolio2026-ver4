@@ -1,29 +1,22 @@
 /**
- * Every string on the page. Copy carried over from the current site so the
- * redesign changes art direction, not content.
+ * Portfolio copy. Keep project descriptions grounded in work that was actually
+ * built or researched; avoid placeholder technologies and invented claims.
  */
 
 export type Snippet = {
-  /** Tab label (also the language name). */
   label: string;
   filename: string;
-  /** One entry per rendered line; keep them short — the window never wraps. */
   lines: string[];
 };
 
 export type Project = {
   id: "caroot" | "protein" | "commerce" | "workflow";
-  /** Display title, split into the lines it is typeset on. */
   title: string[];
-  /** Two or three micro-labels shown above the title. */
   meta: string[];
   year: string;
   statement: string;
-  /** Short technical notes set as a hairline list beside the statement. */
   notes: string[];
-  /** Wide cards span both columns of the work grid. */
   wide?: boolean;
-  /** The snippet the card's code window runs. */
   code: Snippet;
 };
 
@@ -31,83 +24,78 @@ export const projects: Project[] = [
   {
     id: "caroot",
     title: ["CaRoot"],
-    meta: ["AI HEALTH SYSTEM", "DATA PIPELINES"],
+    meta: ["CALORIE MANAGEMENT", "MOBILE APP"],
     year: "2026",
     statement:
-      "Scalable data pipelines and processing infrastructure for biological research platforms.",
-    notes: ["Ingest", "Reasoning", "Delivery"],
+      "A personal calorie and meal management app that uses AI to make everyday food logging easier.",
+    notes: ["Food photo", "Barcode / label", "Nutrition"],
     wide: true,
     code: {
-      label: "Python",
-      filename: "pipeline.py",
+      label: "TypeScript",
+      filename: "caroot.ts",
       lines: [
-        "from caroot import Pipeline",
+        'const meal = await analyseFood(photo);',
         "",
-        'pipe = Pipeline(sources=["barcode", "label", "photo"])',
-        "record = pipe.normalise().model().record()",
-        "pipe.deliver(record)",
+        "const nutrition = await estimateNutrition(meal);",
+        "await saveMeal(nutrition);",
       ],
     },
   },
   {
     id: "protein",
-    title: ["PROTEIN", "STRUCTURE", "AUTOMATION"],
-    meta: ["RESEARCH AUTOMATION", "STRUCTURAL BIOLOGY"],
-    year: "2026",
+    title: ["PROTEIN", "STRUCTURE", "ANALYSIS"],
+    meta: ["UNIVERSITY RESEARCH", "STRUCTURAL BIOLOGY"],
+    year: "2025—2026",
     statement:
-      "Automated protein structure prediction workflows with intelligent orchestration.",
-    notes: ["Prediction", "Orchestration", "Validation"],
+      "University research development for comparing protein structures through inter-carbon distances, with automated retrieval and processing of structural data from UniProt and PDB.",
+    notes: ["UniProt / PDB", "Cα distances", "Structure analysis"],
     code: {
       label: "Python",
-      filename: "fold.py",
+      filename: "structure_analysis.py",
       lines: [
-        "from byakko import fold",
+        "structures = fetch_pdb_structures(uniprot_id)",
         "",
-        'job = fold.predict(sequence, model="v3")',
-        "job.validate()",
-        "fold.publish(job.structure)",
+        "coordinates = extract_ca_coordinates(structures)",
+        "distances = pairwise_distances(coordinates)",
+        "compare_structures(distances)",
       ],
     },
   },
   {
     id: "commerce",
-    title: ["CLIENT", "COMMERCE", "PLATFORM"],
-    meta: ["PLATFORM ENGINEERING", "COMPOSABLE SYSTEMS"],
-    year: "2025",
+    title: ["WEB /", "COMMERCE", "PROJECTS"],
+    meta: ["CLIENT WORK", "WEB DEVELOPMENT"],
+    year: "2025—2026",
     statement:
-      "Composable commerce platform built for scale, flexibility, and developer velocity.",
-    notes: ["Storefront", "Services", "Edge"],
+      "Web and commerce development for client projects, from information architecture and frontend implementation to CMS and checkout integration.",
+    notes: ["Next.js", "microCMS", "Stripe"],
     code: {
       label: "TypeScript",
-      filename: "storefront.ts",
+      filename: "web.ts",
       lines: [
-        'import { compose } from "@byakko/commerce";',
+        'const content = await cms.getList({ endpoint: "products" });',
         "",
-        "export const storefront = compose({",
-        '  services: ["catalog", "cart", "checkout"],',
-        "  edge: true,",
-        "});",
+        "export const products = content.contents;",
       ],
     },
   },
   {
     id: "workflow",
-    title: ["WORKFLOW", "SYSTEMS"],
-    meta: ["INTERNAL SYSTEMS", "INFRASTRUCTURE"],
-    year: "2025",
+    title: ["AUTOMATION", "SYSTEMS"],
+    meta: ["WORKFLOW AUTOMATION", "API INTEGRATION"],
+    year: "2025—2026",
     statement:
-      "Operational infrastructure for monitoring, scheduling, and managing distributed jobs.",
-    notes: ["Schedule", "Observe", "Recover"],
+      "Automation work connecting APIs and data-processing steps for research and operational workflows.",
+    notes: ["Python", "FastAPI", "n8n"],
     wide: true,
     code: {
-      label: "Go",
-      filename: "scheduler.go",
+      label: "Python",
+      filename: "pipeline.py",
       lines: [
-        "sched := workflow.NewScheduler()",
+        "data = fetch_source(identifier)",
         "",
-        "sched.Every(schedule.Minute, jobs.Observe)",
-        "sched.On(jobs.Failed, jobs.Recover)",
-        "sched.Run()",
+        "result = process(data)",
+        "return result",
       ],
     },
   },
@@ -115,109 +103,81 @@ export const projects: Project[] = [
 
 export const hero = {
   eyebrow: "BYAKKO KONDO — ENGINEER / CREATIVE DEVELOPER",
-  /** Two-line headline; the last line is set faint, Daytona's gray second act. */
   lines: ["BUILD DIGITAL", "SYSTEMS."],
   intro:
-    "I design and build scalable digital systems at the intersection of infrastructure, intelligence, and experience.",
+    "I design and build digital products, web experiences, and automation systems from research prototypes to production services.",
   ctas: [
     { label: "VIEW WORK", href: "#work" },
     { label: "GET IN TOUCH", href: "#contact" },
   ],
-  /** The hero code window's language tabs — Daytona's hero signature. */
   tabs: [
     {
       label: "TypeScript",
-      filename: "system.ts",
+      filename: "product.ts",
       lines: [
-        'import { System } from "@byakko/core";',
+        'import { build } from "./product";',
         "",
-        'const system = new System({ base: "Tokyo", year: 2026 });',
-        "await system.design();",
-        'await system.build(["infra", "intelligence", "experience"]);',
-        "system.ship();",
+        'const product = build({ base: "Tokyo", year: 2026 });',
+        "await product.design();",
+        "await product.ship();",
       ],
     },
     {
       label: "Python",
-      filename: "system.py",
+      filename: "research.py",
       lines: [
-        "from byakko import System",
+        "structures = fetch_structures(uniprot_id)",
         "",
-        'system = System(base="Tokyo", year=2026)',
-        "system.design()",
-        'system.build(["infra", "intelligence", "experience"])',
-        "system.ship()",
-      ],
-    },
-    {
-      label: "Go",
-      filename: "system.go",
-      lines: [
-        "package main",
-        "",
-        "func main() {",
-        '    s := byakko.NewSystem("Tokyo", 2026)',
-        "    s.Design()",
-        '    s.Build("infra", "intelligence", "experience")',
-        "    s.Ship()",
-        "}",
+        "distances = analyse(structures)",
+        "export_results(distances)",
       ],
     },
   ] as Snippet[],
 };
 
 export const work = {
-  headline: ["SELECTED SYSTEMS,", "2025—2026."],
+  headline: ["SELECTED WORK,", "2025—2026."],
 };
 
 export const marquee = {
-  label: "STACK IN PRODUCTION",
+  label: "TOOLS & TECHNOLOGIES",
 };
 
 export const about = {
-  statement: ["I ARCHITECT", "SYSTEMS THAT", "TURN COMPLEXITY", "INTO CLARITY."],
+  statement: ["I BUILD", "PRODUCTS FROM", "IDEA TO", "IMPLEMENTATION."],
   identity: ["BYAKKO KONDO", "ENGINEER / CREATIVE DEVELOPER", "TOKYO, JAPAN"],
   paragraphs: [
-    "I architect and build systems that turn complexity into clarity. My work spans infrastructure, developer tooling, and AI-driven automation.",
-    "I care about performance, precision, and the details that make systems reliable and usable.",
+    "My work spans mobile apps, web development, research software, and workflow automation. I studied life science at Gakushuin University, where I developed software for protein structure analysis.",
+    "Today I work across personal product development and client projects, focusing on practical systems that are clear, reliable, and usable.",
   ],
 };
 
-/**
- * The flat term list feeds the marquee; the grouped view feeds the
- * capabilities tabs. Keep the two in step — same terms in both.
- */
 export const capabilities: string[] = [
   "TypeScript",
   "Python",
-  "Go",
   "Next.js",
   "React",
+  "React Native",
+  "Expo",
   "FastAPI",
   "Supabase",
   "PostgreSQL",
   "Docker",
-  "AWS",
-  "Terraform",
-  "Kubernetes",
+  "microCMS",
+  "n8n",
 ];
 
 export type CapabilityGroup = {
   label: string;
-  /** Lowercase single word — the panel shows it as `$ stack --<slug>`. */
   slug: string;
   items: string[];
 };
 
 export const capabilityGroups: CapabilityGroup[] = [
-  { label: "LANGUAGES", slug: "languages", items: ["TypeScript", "Python", "Go"] },
-  { label: "FRAMEWORKS", slug: "frameworks", items: ["Next.js", "React", "FastAPI"] },
-  { label: "PLATFORM", slug: "platform", items: ["Supabase", "PostgreSQL", "Docker"] },
-  {
-    label: "INFRASTRUCTURE",
-    slug: "infra",
-    items: ["AWS", "Terraform", "Kubernetes"],
-  },
+  { label: "LANGUAGES", slug: "languages", items: ["TypeScript", "Python"] },
+  { label: "WEB", slug: "web", items: ["Next.js", "React", "microCMS"] },
+  { label: "MOBILE", slug: "mobile", items: ["React Native", "Expo", "Supabase"] },
+  { label: "BACKEND / AUTOMATION", slug: "backend", items: ["FastAPI", "PostgreSQL", "Docker", "n8n"] },
 ];
 
 export const contact = {
@@ -230,8 +190,6 @@ export const contact = {
   ],
 };
 
-/** Site navigation. Home sections carry the leading slash so they resolve
-    from every page; on the home page itself they still scroll smoothly. */
 export const nav = [
   { label: "WORK", href: "/works" },
   { label: "ABOUT", href: "/#about" },
