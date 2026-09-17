@@ -7,12 +7,11 @@ import { useIsoLayoutEffect } from "@/lib/useIsoLayoutEffect";
 import { lockScroll, unlockScroll } from "@/lib/lenisRef";
 import NavAnchor from "@/components/NavAnchor";
 import LanguageToggle from "@/components/LanguageToggle";
-import LocalizedText from "@/components/LocalizedText";
 
 const links = [
-  { href: "/works", en: "WORK", ja: "実績" },
-  { href: "/about", en: "ABOUT", ja: "プロフィール" },
-  { href: "/contact", en: "CONTACT", ja: "お問い合わせ" },
+  { href: "/works", label: "WORK" },
+  { href: "/about", label: "ABOUT" },
+  { href: "/contact", label: "CONTACT" },
 ];
 
 export default function GlobalNav() {
@@ -58,18 +57,18 @@ export default function GlobalNav() {
           <span className="nav-role block" style={{ color: "var(--dim)" }}>ENGINEER / CREATIVE DEVELOPER</span>
         </div>
         <div className="nav-right">
-          <nav className="nav-links t-mono" aria-label="Primary">{links.map((item) => <NavAnchor key={item.href} href={item.href}><LocalizedText en={item.en} ja={item.ja} /></NavAnchor>)}</nav>
+          <nav className="nav-links t-mono" aria-label="Primary">{links.map((item) => <NavAnchor key={item.href} href={item.href}>{item.label}</NavAnchor>)}</nav>
           <LanguageToggle />
-          <NavAnchor className="nav-cta t-mono" href="/contact"><LocalizedText en="GET IN TOUCH" ja="お問い合わせ" /></NavAnchor>
+          <NavAnchor className="nav-cta t-mono" href="/contact">GET IN TOUCH</NavAnchor>
         </div>
         <button type="button" className="burger" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="site-menu" onClick={() => toggle(!open)}><span className="burger-top" /><span className="burger-bottom" /></button>
       </header>
       <div id="site-menu" className="menu" hidden={false} aria-hidden={!open}>
         <nav className="menu-list" aria-label="Menu">
-          <NavAnchor href="/#hero" className="menu-line" tabIndex={open ? 0 : -1} onClick={() => toggle(false)}><span className="menu-item t-display"><LocalizedText en="HOME" ja="ホーム" /></span></NavAnchor>
-          {links.map((item) => <NavAnchor key={item.href} href={item.href} className="menu-line" tabIndex={open ? 0 : -1} onClick={() => toggle(false)}><span className="menu-item t-display"><LocalizedText en={item.en} ja={item.ja} /></span></NavAnchor>)}
+          <NavAnchor href="/#hero" className="menu-line" tabIndex={open ? 0 : -1} onClick={() => toggle(false)}><span className="menu-item t-display">HOME</span></NavAnchor>
+          {links.map((item) => <NavAnchor key={item.href} href={item.href} className="menu-line" tabIndex={open ? 0 : -1} onClick={() => toggle(false)}><span className="menu-item t-display">{item.label}</span></NavAnchor>)}
         </nav>
-        <div className="menu-foot t-mono"><a href={`mailto:${contact.email}`} tabIndex={open ? 0 : -1}>{contact.email}</a><span><LocalizedText en="TOKYO, JAPAN" ja="東京、日本" /></span><LanguageToggle onLanguageChange={() => toggle(false)} /></div>
+        <div className="menu-foot t-mono"><a href={`mailto:${contact.email}`} tabIndex={open ? 0 : -1}>{contact.email}</a><span>TOKYO, JAPAN</span><LanguageToggle onLanguageChange={() => toggle(false)} /></div>
       </div>
     </div>
   );
