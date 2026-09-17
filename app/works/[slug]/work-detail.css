@@ -1,0 +1,99 @@
+/* Work detail responsive polish. Scoped to case-study pages. */
+@media (max-width: 699px) {
+  .work-detail .work-hero {
+    padding-top: clamp(8rem, 17vh, 10rem);
+    padding-bottom: 3.25rem;
+  }
+
+  .work-detail .work-kicker {
+    align-items: flex-start;
+    gap: .75rem;
+    font-size: .58rem;
+    line-height: 1.7;
+  }
+
+  .work-detail .work-kicker > span:first-child {
+    min-width: 0;
+    max-width: calc(100% - 3.4rem);
+  }
+
+  .work-detail .work-title {
+    margin-top: 1.65rem;
+    font-size: clamp(3rem, 14vw, 4.8rem);
+    line-height: .94;
+    overflow-wrap: anywhere;
+  }
+
+  .work-detail--goodwill-legal .work-title {
+    font-size: clamp(2.65rem, 11.8vw, 4rem);
+    line-height: .92;
+    letter-spacing: -.055em;
+  }
+
+  .work-detail .work-statement {
+    margin-top: 1.8rem;
+    max-width: 31rem;
+    font-size: .9rem;
+    line-height: 1.85;
+  }
+
+  .work-detail .spec {
+    grid-template-columns: 1fr;
+    margin-top: 2.6rem;
+  }
+
+  .work-detail .spec > div {
+    padding: 1.15rem 0;
+    gap: .65rem;
+  }
+
+  .work-detail .spec dd {
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+  }
+
+  .work-detail .work-plates {
+    padding-bottom: 4.5rem;
+  }
+
+  .work-detail .work-plates-grid {
+    gap: 1.25rem;
+  }
+
+  .work-detail .plate--mobile {
+    max-width: min(78vw, 290px);
+    margin-inline: auto;
+  }
+
+  .work-detail .work-section + .work-section {
+    margin-top: 4.5rem;
+  }
+
+  .work-detail .next-link {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .8rem 1rem;
+    padding: 1.6rem 0;
+    overflow: hidden;
+  }
+
+  .work-detail .next-label {
+    grid-column: 1 / -1;
+  }
+
+  .work-detail .next-name {
+    min-width: 0;
+    font-size: clamp(1.55rem, 7.2vw, 2.35rem);
+    line-height: 1.05;
+    overflow-wrap: anywhere;
+  }
+
+  .work-detail .next-arrow {
+    justify-self: end;
+  }
+
+  .work-detail--hakuho .work-title {
+    font-size: clamp(3.4rem, 16vw, 5rem);
+  }
+}
