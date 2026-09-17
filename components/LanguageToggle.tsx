@@ -35,12 +35,34 @@ function translate(root: HTMLElement, lang: Lang) {
   document.documentElement.dataset.lang = lang;
 }
 
+function detectVisitorLanguage(): Lang {
+  const locales = [navigator.language, ...(navigator.languages ?? [])]
+    .filter(Boolean)
+    .map((value) => value.toLowerCase());
+
+  // Prefer the visitor's explicit browser/device language. This is more
+  // privacy-friendly and more accurate for travellers than IP alone.
+  if (locales.some((locale) => locale === "ja" || locale.startsWith("ja-"))) return "ja";
+
+  // Location-aware fallback without a third-party geolocation request:
+  // browsers expose the IANA timezone selected by the device. Japan has one
+  // timezone, so Asia/Tokyo is a strong signal when the browser language is
+  // otherwise inconclusive.
+  try {
+    if (Intl.DateTimeFormat().resolvedOptions().timeZone === "Asia/Tokyo") return "ja";
+  } catch {
+    // Ignore unavailable/blocked Intl data and fall back to English.
+  }
+
+  return "en";
+}
+
 export default function LanguageToggle() {
   const [lang, setLang] = useState<Lang>("en");
 
   useEffect(() => {
     const saved = window.localStorage.getItem("portfolio-language") as Lang | null;
-    const initial: Lang = saved === "ja" ? "ja" : "en";
+    const initial: Lang = saved === "ja" || saved === "en" ? saved : detectVisitorLanguage();
     setLang(initial);
     translate(document.body, initial);
   }, []);
@@ -53,9 +75,9 @@ export default function LanguageToggle() {
   };
 
   return (
-    <div className="language-toggle t-mono" aria-label="Language">
+    <div className="language-toggle t-mono" aria-label="Language selector">
       <button type="button" className={lang === "en" ? "is-active" : ""} onClick={() => change("en")} aria-pressed={lang === "en"}>EN</button>
-      <span aria-hidden="true">/</span>
+      <span className="language-toggle-divider" aria-hidden="true">/</span>
       <button type="button" className={lang === "ja" ? "is-active" : ""} onClick={() => change("ja")} aria-pressed={lang === "ja"}>JP</button>
     </div>
   );
