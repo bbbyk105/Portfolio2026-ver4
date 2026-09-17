@@ -5,6 +5,7 @@ export const brandIcons: Record<string, string> = {
   "Next.js": "/icons/nextdotjs.svg",
   React: "/icons/react.svg",
   "React Native": "/icons/react.svg",
+  Expo: "/icons/expo.svg",
   FastAPI: "/icons/fastapi.svg",
   Supabase: "/icons/supabase.svg",
   PostgreSQL: "/icons/postgresql.svg",
