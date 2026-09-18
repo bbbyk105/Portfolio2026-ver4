@@ -18,7 +18,8 @@ const japanese: Record<string, string> = {
   "Structure analysis": "構造解析",
 
   // Shared work-page UI
-  WORKS: "実績",
+  // Keep the global navigation/footer label in English in both language modes.
+  WORKS: "WORKS",
   "FIVE PRODUCTS IN PRODUCTION": "公開・運用中の5プロジェクト",
   "SHIPPED,": "公開済み、",
   "AND LIVE.": "そして運用中。",
